@@ -1,0 +1,229 @@
+### Catálogo - Artista e Álbum
+# O Spring Security ainda não tem configuração no projeto: toda rota exige Basic Auth
+# com o usuário "user" e a senha impressa no log ao subir a aplicação
+# ("Using generated security password: ..."). Cole a senha em @senha abaixo.
+
+@baseUrl = http://localhost:8080/api
+@senha = cole-aqui-a-senha-gerada
+
+############################################################
+# ARTISTAS
+############################################################
+
+### Criar artista -> 201 + Location
+POST {{baseUrl}}/artistas
+Authorization: Basic user {{senha}}
+Content-Type: application/json
+
+{
+  "nome": "Pitty",
+  "biografia": "Cantora e compositora baiana de rock.",
+  "pais": "Brasil",
+  "inicioCarreira": "2002-01-01"
+}
+
+### Criar segundo artista -> 201
+POST {{baseUrl}}/artistas
+Authorization: Basic user {{senha}}
+Content-Type: application/json
+
+{
+  "nome": "Titãs",
+  "pais": "Brasil",
+  "inicioCarreira": "1982-01-01"
+}
+
+### ERRO: criar artista sem nome e com data futura -> 400 com errosDeCampo
+POST {{baseUrl}}/artistas
+Authorization: Basic user {{senha}}
+Content-Type: application/json
+
+{
+  "nome": "",
+  "inicioCarreira": "2999-01-01"
+}
+
+### ERRO: JSON mal formatado -> 400
+POST {{baseUrl}}/artistas
+Authorization: Basic user {{senha}}
+Content-Type: application/json
+
+{ "nome": "Sem fechar"
+
+### Listar artistas (paginado)
+GET {{baseUrl}}/artistas?page=0&size=10&sort=nome,asc
+Authorization: Basic user {{senha}}
+
+### Buscar artistas por nome (parcial, ignora maiúsculas)
+GET {{baseUrl}}/artistas?nome=pit
+Authorization: Basic user {{senha}}
+
+### Buscar artista por id -> 200
+GET {{baseUrl}}/artistas/1
+Authorization: Basic user {{senha}}
+
+### ERRO: artista inexistente -> 404
+GET {{baseUrl}}/artistas/9999
+Authorization: Basic user {{senha}}
+
+### ERRO: id inválido -> 400
+GET {{baseUrl}}/artistas/abc
+Authorization: Basic user {{senha}}
+
+### Atualizar artista -> 200
+PUT {{baseUrl}}/artistas/1
+Authorization: Basic user {{senha}}
+Content-Type: application/json
+
+{
+  "nome": "Pitty",
+  "biografia": "Biografia atualizada.",
+  "pais": "Brasil",
+  "inicioCarreira": "2002-01-01"
+}
+
+### ERRO: atualizar artista inexistente -> 404
+PUT {{baseUrl}}/artistas/9999
+Authorization: Basic user {{senha}}
+Content-Type: application/json
+
+{
+  "nome": "Ninguém"
+}
+
+### Álbuns do artista (paginado)
+GET {{baseUrl}}/artistas/1/albuns?page=0&size=10
+Authorization: Basic user {{senha}}
+
+### ERRO: álbuns de artista inexistente -> 404
+GET {{baseUrl}}/artistas/9999/albuns
+Authorization: Basic user {{senha}}
+
+############################################################
+# ÁLBUNS
+############################################################
+
+### Criar álbum -> 201 + Location
+POST {{baseUrl}}/albuns
+Authorization: Basic user {{senha}}
+Content-Type: application/json
+
+{
+  "titulo": "Admirável Chip Novo",
+  "anoLancamento": 2003,
+  "capaUrl": "https://example.com/capas/admiravel-chip-novo.jpg",
+  "artistaId": 1
+}
+
+### Criar outro álbum -> 201
+POST {{baseUrl}}/albuns
+Authorization: Basic user {{senha}}
+Content-Type: application/json
+
+{
+  "titulo": "Cabeça Dinossauro",
+  "anoLancamento": 1986,
+  "artistaId": 2
+}
+
+### ERRO: artista inexistente -> 404
+POST {{baseUrl}}/albuns
+Authorization: Basic user {{senha}}
+Content-Type: application/json
+
+{
+  "titulo": "Álbum órfão",
+  "anoLancamento": 2010,
+  "artistaId": 9999
+}
+
+### ERRO: ano no futuro -> 400
+POST {{baseUrl}}/albuns
+Authorization: Basic user {{senha}}
+Content-Type: application/json
+
+{
+  "titulo": "Do futuro",
+  "anoLancamento": 2999,
+  "artistaId": 1
+}
+
+### ERRO: título vazio, ano < 1900 e sem artistaId -> 400 com errosDeCampo
+POST {{baseUrl}}/albuns
+Authorization: Basic user {{senha}}
+Content-Type: application/json
+
+{
+  "titulo": "",
+  "anoLancamento": 1800
+}
+
+### Listar álbuns (paginado)
+GET {{baseUrl}}/albuns?page=0&size=10&sort=anoLancamento,desc
+Authorization: Basic user {{senha}}
+
+### Filtrar álbuns por ano
+GET {{baseUrl}}/albuns?ano=2003
+Authorization: Basic user {{senha}}
+
+### Filtrar álbuns por artista
+GET {{baseUrl}}/albuns?artistaId=1
+Authorization: Basic user {{senha}}
+
+### Filtrar álbuns por ano + artista
+GET {{baseUrl}}/albuns?ano=2003&artistaId=1
+Authorization: Basic user {{senha}}
+
+### Buscar álbum por id -> 200
+GET {{baseUrl}}/albuns/1
+Authorization: Basic user {{senha}}
+
+### ERRO: álbum inexistente -> 404
+GET {{baseUrl}}/albuns/9999
+Authorization: Basic user {{senha}}
+
+### Atualizar álbum trocando de artista -> 200
+PUT {{baseUrl}}/albuns/1
+Authorization: Basic user {{senha}}
+Content-Type: application/json
+
+{
+  "titulo": "Admirável Chip Novo (Remaster)",
+  "anoLancamento": 2003,
+  "artistaId": 2
+}
+
+### ERRO: atualizar álbum para artista inexistente -> 404
+PUT {{baseUrl}}/albuns/1
+Authorization: Basic user {{senha}}
+Content-Type: application/json
+
+{
+  "titulo": "Admirável Chip Novo",
+  "anoLancamento": 2003,
+  "artistaId": 9999
+}
+
+### Músicas do álbum -> 501 enquanto o módulo de Música não existir
+GET {{baseUrl}}/albuns/1/musicas
+Authorization: Basic user {{senha}}
+
+############################################################
+# EXCLUSÕES (rode por último)
+############################################################
+
+### ERRO: excluir artista com álbuns -> 409
+DELETE {{baseUrl}}/artistas/2
+Authorization: Basic user {{senha}}
+
+### Excluir álbum -> 204
+DELETE {{baseUrl}}/albuns/1
+Authorization: Basic user {{senha}}
+
+### ERRO: excluir álbum inexistente -> 404
+DELETE {{baseUrl}}/albuns/9999
+Authorization: Basic user {{senha}}
+
+### Excluir artista sem álbuns -> 204 (Pitty ficou sem álbuns depois da troca e da exclusão acima)
+DELETE {{baseUrl}}/artistas/1
+Authorization: Basic user {{senha}}
