@@ -1,0 +1,50 @@
+# Histórico de reprodução — Luis Gabriel
+# Execute a aplicação a partir da pasta Splitfy: .\mvnw.cmd spring-boot:run
+# O PostgreSQL deve estar disponível conforme application.properties.
+# Se necessário, configure SPRING_DATASOURCE_URL, SPRING_DATASOURCE_USERNAME
+# e SPRING_DATASOURCE_PASSWORD no ambiente antes de iniciar a aplicação.
+# Substitua os IDs abaixo por registros existentes no seu banco de testes.
+# O usuário precisa existir na tabela usuario; a música precisa estar cadastrada.
+# Enquanto a API de usuários não estiver integrada, prepare o usuário diretamente
+# no banco de testes. O módulo de histórico não cadastra usuários.
+# Nesta etapa, usuarioId é informado manualmente e não comprova autenticação.
+
+@endereco = http://localhost:8080
+@usuarioId = 1
+@musicaId = 1
+
+### Registrar reprodução — HTTP 200, com o contador atualizado da música
+# Cada chamada cria um registro de histórico, mesmo repetindo usuário e música.
+POST {{endereco}}/api/musicas/{{musicaId}}/play
+Content-Type: application/json
+
+{
+  "usuarioId": {{usuarioId}}
+}
+
+### Consultar histórico — HTTP 200, até 20 registros por padrão
+# Resposta: lista de objetos com id, usuarioId, musicaId e reproduzidoEm.
+# A data/hora é preenchida pelo PostgreSQL.
+# Ordenação: reproduzidoEm decrescente e id decrescente em caso de empate.
+# Um usuário existente sem reproduções recebe [].
+GET {{endereco}}/api/usuarios/{{usuarioId}}/historico
+
+### Consultar somente a reprodução mais recente — HTTP 200
+# O limite deve estar entre 1 e 100.
+GET {{endereco}}/api/usuarios/{{usuarioId}}/historico?limite=1
+
+### Rejeitar usuário inválido — HTTP 400, sem alterar contador ou histórico
+POST {{endereco}}/api/musicas/{{musicaId}}/play
+Content-Type: application/json
+
+{
+  "usuarioId": 0
+}
+
+### Rejeitar limite inválido — HTTP 400
+GET {{endereco}}/api/usuarios/{{usuarioId}}/historico?limite=101
+
+# Usuário ou música inexistente deve retornar HTTP 404.
+# Confira também que um segundo usuário recebe apenas suas próprias reproduções.
+# No botão de play da interface existente, informe um ID de usuário válido.
+# A prévia com dados locais da interface não persiste histórico no PostgreSQL.

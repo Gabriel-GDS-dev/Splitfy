@@ -8,6 +8,7 @@ import com.example.Splitfy.catalog.exception.CatalogNotFoundException;
 import com.example.Splitfy.catalog.exception.CatalogValidationException;
 import com.example.Splitfy.catalog.repository.GeneroRepository;
 import com.example.Splitfy.catalog.repository.MusicaRepository;
+import com.example.Splitfy.historico.service.HistoricoReproducaoService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +21,13 @@ public class MusicaService {
 
     private final MusicaRepository musicaRepository;
     private final GeneroRepository generoRepository;
+    private final HistoricoReproducaoService historicoService;
 
-    public MusicaService(MusicaRepository musicaRepository, GeneroRepository generoRepository) {
+    public MusicaService(MusicaRepository musicaRepository, GeneroRepository generoRepository,
+                         HistoricoReproducaoService historicoService) {
         this.musicaRepository = musicaRepository;
         this.generoRepository = generoRepository;
+        this.historicoService = historicoService;
     }
 
     @Transactional(readOnly = true)
@@ -78,8 +82,9 @@ public class MusicaService {
     }
 
     @Transactional
-    public MusicaResponse registrarPlay(Long id) {
+    public MusicaResponse registrarPlay(Long id, Long usuarioId) {
         Musica musica = buscarEntidade(id);
+        historicoService.registrar(usuarioId, musica);
         long atual = musica.getReproducoes() == null ? 0L : musica.getReproducoes();
         musica.setReproducoes(atual + 1);
         return toResponse(musicaRepository.save(musica));
@@ -127,7 +132,7 @@ public class MusicaService {
 
     private String limparFiltro(String valor) {
         if (valor == null || valor.trim().isEmpty()) {
-            return null;
+            return "";
         }
         return valor.trim();
     }
