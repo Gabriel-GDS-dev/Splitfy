@@ -11,7 +11,11 @@ public interface MusicaRepository extends JpaRepository<Musica, Long> {
 
     List<Musica> findByGeneroIdOrderByTituloAsc(Long generoId);
 
+    List<Musica> findByAlbumIdOrderByTituloAsc(Long albumId);
+
     boolean existsByGeneroId(Long generoId);
+
+    boolean existsByAlbumId(Long albumId);
 
     @Query("""
             select m from Musica m

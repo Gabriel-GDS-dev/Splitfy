@@ -6,6 +6,7 @@ import com.example.Splitfy.catalog.entity.Genero;
 import com.example.Splitfy.catalog.entity.Musica;
 import com.example.Splitfy.catalog.exception.CatalogNotFoundException;
 import com.example.Splitfy.catalog.exception.CatalogValidationException;
+import com.example.Splitfy.catalog.repository.AlbumRepository;
 import com.example.Splitfy.catalog.repository.GeneroRepository;
 import com.example.Splitfy.catalog.repository.MusicaRepository;
 import com.example.Splitfy.historico.service.HistoricoReproducaoService;
@@ -21,12 +22,15 @@ public class MusicaService {
 
     private final MusicaRepository musicaRepository;
     private final GeneroRepository generoRepository;
+    private final AlbumRepository albumRepository;
     private final HistoricoReproducaoService historicoService;
 
     public MusicaService(MusicaRepository musicaRepository, GeneroRepository generoRepository,
+                         AlbumRepository albumRepository,
                          HistoricoReproducaoService historicoService) {
         this.musicaRepository = musicaRepository;
         this.generoRepository = generoRepository;
+        this.albumRepository = albumRepository;
         this.historicoService = historicoService;
     }
 
@@ -48,6 +52,16 @@ public class MusicaService {
     }
 
     @Transactional(readOnly = true)
+    public List<MusicaResponse> listarPorAlbum(Long albumId) {
+        if (!albumRepository.existsById(albumId)) {
+            throw new CatalogNotFoundException("Album nao encontrado.");
+        }
+        return musicaRepository.findByAlbumIdOrderByTituloAsc(albumId).stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public MusicaResponse buscar(Long id) {
         return toResponse(buscarEntidade(id));
     }
@@ -55,6 +69,7 @@ public class MusicaService {
     @Transactional
     public MusicaResponse criar(MusicaRequest request) {
         validar(request);
+        validarAlbum(request.albumId());
         Genero genero = buscarGenero(request.generoId());
         Musica musica = new Musica(
                 request.titulo().trim(),
@@ -70,6 +85,7 @@ public class MusicaService {
     public MusicaResponse atualizar(Long id, MusicaRequest request) {
         Musica musica = buscarEntidade(id);
         validar(request);
+        validarAlbum(request.albumId());
         Genero genero = buscarGenero(request.generoId());
 
         musica.setTitulo(request.titulo().trim());
@@ -123,6 +139,12 @@ public class MusicaService {
     private Genero buscarGenero(Long id) {
         return generoRepository.findById(id)
                 .orElseThrow(() -> new CatalogNotFoundException("Genero nao encontrado."));
+    }
+
+    private void validarAlbum(Long id) {
+        if (!albumRepository.existsById(id)) {
+            throw new CatalogNotFoundException("Album nao encontrado.");
+        }
     }
 
     private Musica buscarEntidade(Long id) {
