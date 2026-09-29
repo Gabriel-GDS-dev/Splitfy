@@ -45,7 +45,7 @@ class ArtistaServiceTest {
 
     @Test
     void criarDeveSalvarERetornarResponse() {
-        ArtistaRequest request = new ArtistaRequest("Pitty", "Bio", "Brasil", LocalDate.of(2002, 1, 1));
+        ArtistaRequest request = new ArtistaRequest("Taylor Swift", "Cantora e compositora norte-americana.", "Estados Unidos", LocalDate.of(2006, 10, 24));
         when(artistaRepository.save(any(Artista.class))).thenAnswer(inv -> {
             Artista a = inv.getArgument(0);
             a.setId(1L);
@@ -56,8 +56,8 @@ class ArtistaServiceTest {
         ArtistaResponse response = artistaService.criar(request);
 
         assertThat(response.id()).isEqualTo(1L);
-        assertThat(response.nome()).isEqualTo("Pitty");
-        assertThat(response.pais()).isEqualTo("Brasil");
+        assertThat(response.nome()).isEqualTo("Taylor Swift");
+        assertThat(response.pais()).isEqualTo("Estados Unidos");
         assertThat(response.criadoEm()).isNotNull();
     }
 
@@ -83,7 +83,7 @@ class ArtistaServiceTest {
 
     @Test
     void excluirArtistaComAlbunsDeveLancarConflito() {
-        Artista artista = artista(1L, "Pitty");
+        Artista artista = artista(1L, "Taylor Swift");
         when(artistaRepository.findById(1L)).thenReturn(Optional.of(artista));
         when(albumRepository.existsByArtistaId(1L)).thenReturn(true);
 
@@ -95,7 +95,7 @@ class ArtistaServiceTest {
 
     @Test
     void excluirArtistaSemAlbunsDeveRemover() {
-        Artista artista = artista(1L, "Pitty");
+        Artista artista = artista(1L, "Taylor Swift");
         when(artistaRepository.findById(1L)).thenReturn(Optional.of(artista));
         when(albumRepository.existsByArtistaId(1L)).thenReturn(false);
 
@@ -114,12 +114,12 @@ class ArtistaServiceTest {
 
     @Test
     void listarComNomeDeveBuscarPorNomeParcial() {
-        Page<Artista> pagina = new PageImpl<>(List.of(artista(1L, "Pitty")), pageable, 1);
-        when(artistaRepository.findByNomeContainingIgnoreCase("pit", pageable)).thenReturn(pagina);
+        Page<Artista> pagina = new PageImpl<>(List.of(artista(1L, "Taylor Swift")), pageable, 1);
+        when(artistaRepository.findByNomeContainingIgnoreCase("swift", pageable)).thenReturn(pagina);
 
-        Page<ArtistaResponse> resultado = artistaService.listar("  pit ", pageable);
+        Page<ArtistaResponse> resultado = artistaService.listar("  swift ", pageable);
 
-        assertThat(resultado.getContent()).extracting(ArtistaResponse::nome).containsExactly("Pitty");
+        assertThat(resultado.getContent()).extracting(ArtistaResponse::nome).containsExactly("Taylor Swift");
         verify(artistaRepository, never()).findAll(any(Pageable.class));
     }
 
