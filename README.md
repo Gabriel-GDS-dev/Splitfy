@@ -2,7 +2,7 @@
 
 API de um sistema de música, desenvolvida em equipe como uma aplicação Spring Boot com um banco PostgreSQL. O projeto usa Spring Data JPA e Flyway. O código da aplicação está na pasta [`Splitfy/`](Splitfy/).
 
-Este README descreve o código disponível na branch `luis-gabriel/historico-reproducao` em 28/09/2026. O Documento de Análise e o DER já foram entregues, conforme informado pela equipe. A segunda entrega foi alterada para conter somente o script de criação do banco, com prazo em 22/10/2026. As funcionalidades citadas abaixo podem continuar evoluindo sem antecipar etapas futuras.
+Este README descreve a versão integrada dos módulos da equipe. O Documento de Análise e o DER já foram entregues, conforme informado pela equipe. A segunda entrega foi alterada para conter somente o script de criação do banco, com prazo em 22/10/2026. As funcionalidades citadas abaixo podem continuar evoluindo sem antecipar etapas futuras.
 
 ## Como executar
 
@@ -34,26 +34,26 @@ Cada integrante mantém sua seção abaixo. **"Banco disponível"** significa qu
 
 - **Banco disponível:** migrations `V5__create_genero.sql` e `V6__create_musica.sql`.
 - **API disponível nesta branch:** cadastro, consulta, atualização e exclusão de gêneros em `/api/generos` e de músicas em `/api/musicas`. A música possui busca por título, gênero e álbum. O play simulado fica em `/api/musicas/{id}/play` e recebe a integração com o histórico descrita na seção de Luis Gabriel.
-- **Integração:** cadastrar uma música exige um álbum e um gênero existentes. A tabela de álbum já existe, mas a API de álbum ainda não está integrada nesta branch.
+- **Integração:** cadastrar uma música exige um álbum e um gênero existentes. A API valida essas referências antes de salvar.
 - **Para ampliar:** incluir exemplos de requisições e validações do catálogo quando esse trabalho for documentado.
 
 ### Karen — artista e álbum
 
 - **Banco disponível:** migrations `V3__create_artista.sql` e `V4__create_album.sql`.
-- **API nesta branch:** ainda não integrada. Há trabalho de artista e álbum em uma branch separada; esta seção deve ser atualizada quando ele entrar na versão compartilhada.
-- **Para ampliar:** registrar endpoints, regras e exemplos após a integração.
+- **API disponível:** CRUD de artistas em `/api/artistas` e de álbuns em `/api/albuns`. Também estão disponíveis `/api/artistas/{id}/albuns` e `/api/albuns/{id}/musicas`.
+- **Regras:** um artista com álbuns e um álbum com músicas não podem ser excluídos antes de suas dependências.
 
 ### Airon — usuário e perfil
 
 - **Banco disponível:** migrations `V1__create_usuario.sql` e `V2__create_perfil.sql`. A tabela `usuario` já permite a referência usada pelo histórico.
-- **API nesta branch:** ainda não integrada. Para validar o histórico agora, o usuário deve ser preparado no banco de testes.
-- **Para ampliar:** registrar cadastro, consulta, atualização, desativação e perfil quando essas operações estiverem integradas.
+- **API disponível:** cadastro, consulta, atualização e desativação de usuários em `/api/usuarios`. A reativação usa `PATCH /api/usuarios/{id}/ativar`.
+- **Perfil:** CRUD em `/api/usuarios/{usuarioId}/perfil`, com um perfil por usuário.
 
 ### Victor — playlist e avaliação/curtida
 
 - **Banco disponível:** migrations `V7__create_playlist.sql`, `V8__create_playlist_musica.sql` e `V9__create_avaliacao.sql`.
-- **API nesta branch:** ainda não integrada.
-- **Para ampliar:** registrar endpoints, regras e exemplos de playlist e avaliação/curtida após a integração.
+- **API disponível:** CRUD de playlists em `/api/playlists`, listagem por usuário em `/api/usuarios/{usuarioId}/playlists` e inclusão/remoção de músicas em `/api/playlists/{id}/musicas`.
+- **Avaliação/curtida:** operações em `/api/avaliacoes` e contagem de curtidas em `/api/avaliacoes/musicas/{musicaId}/curtidas`.
 
 ## Como manter este README
 
