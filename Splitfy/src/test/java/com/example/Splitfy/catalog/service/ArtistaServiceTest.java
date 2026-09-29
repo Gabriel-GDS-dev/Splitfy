@@ -9,6 +9,8 @@ import com.example.Splitfy.catalog.repository.AlbumRepository;
 import com.example.Splitfy.catalog.repository.ArtistaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -42,6 +44,25 @@ class ArtistaServiceTest {
     private ArtistaService artistaService;
 
     private final Pageable pageable = PageRequest.of(0, 10);
+
+    @ParameterizedTest(name = "{0} ({1})")
+    @CsvSource({
+            "Taylor Swift, Estados Unidos",
+            "Calvin Harris, Reino Unido",
+            "Demi Lovato, Estados Unidos",
+            "Alok, Brasil",
+            "Katy Perry, Estados Unidos",
+            "Madonna, Estados Unidos",
+            "Dua Lipa, Reino Unido"
+    })
+    void criarDeveSalvarArtistasDoCatalogo(String nome, String pais) {
+        when(artistaRepository.save(any(Artista.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        ArtistaResponse response = artistaService.criar(new ArtistaRequest(nome, null, pais, null));
+
+        assertThat(response.nome()).isEqualTo(nome);
+        assertThat(response.pais()).isEqualTo(pais);
+    }
 
     @Test
     void criarDeveSalvarERetornarResponse() {

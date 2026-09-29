@@ -25,7 +25,10 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.time.Year;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -56,62 +59,124 @@ class AlbumServiceTest {
 
     private final Pageable pageable = PageRequest.of(0, 10);
 
-    // Discografia da Taylor Swift: álbuns de estúdio e regravações (Taylor's Version), em ordem de lançamento.
-    static Stream<Arguments> albunsTaylorSwift() {
-        return Stream.of(
-                arguments("Taylor Swift", 2006),
-                arguments("Fearless", 2008),
-                arguments("Speak Now", 2010),
-                arguments("Red", 2012),
-                arguments("1989", 2014),
-                arguments("reputation", 2017),
-                arguments("Lover", 2019),
-                arguments("folklore", 2020),
-                arguments("evermore", 2020),
-                arguments("Fearless (Taylor's Version)", 2021),
-                arguments("Red (Taylor's Version)", 2021),
-                arguments("Midnights", 2022),
-                arguments("Speak Now (Taylor's Version)", 2023),
-                arguments("1989 (Taylor's Version)", 2023),
-                arguments("The Tortured Poets Department", 2024),
-                arguments("The Life of a Showgirl", 2025)
-        );
+    private record Lancamento(String titulo, int ano) {
     }
 
-    @ParameterizedTest(name = "{0} ({1})")
-    @MethodSource("albunsTaylorSwift")
-    void criarDeveSalvarTodosOsAlbunsDaTaylorSwift(String titulo, int ano) {
-        when(artistaRepository.findById(1L)).thenReturn(Optional.of(artista(1L, "Taylor Swift")));
+    // Discografias usadas nos testes: álbuns de estúdio em ordem de lançamento.
+    // Para a Taylor Swift, inclui também as regravações (Taylor's Version).
+    private static final Map<String, List<Lancamento>> DISCOGRAFIAS = new LinkedHashMap<>();
+
+    static {
+        DISCOGRAFIAS.put("Taylor Swift", List.of(
+                new Lancamento("Taylor Swift", 2006),
+                new Lancamento("Fearless", 2008),
+                new Lancamento("Speak Now", 2010),
+                new Lancamento("Red", 2012),
+                new Lancamento("1989", 2014),
+                new Lancamento("reputation", 2017),
+                new Lancamento("Lover", 2019),
+                new Lancamento("folklore", 2020),
+                new Lancamento("evermore", 2020),
+                new Lancamento("Fearless (Taylor's Version)", 2021),
+                new Lancamento("Red (Taylor's Version)", 2021),
+                new Lancamento("Midnights", 2022),
+                new Lancamento("Speak Now (Taylor's Version)", 2023),
+                new Lancamento("1989 (Taylor's Version)", 2023),
+                new Lancamento("The Tortured Poets Department", 2024),
+                new Lancamento("The Life of a Showgirl", 2025)));
+        DISCOGRAFIAS.put("Calvin Harris", List.of(
+                new Lancamento("I Created Disco", 2007),
+                new Lancamento("Ready for the Weekend", 2009),
+                new Lancamento("18 Months", 2012),
+                new Lancamento("Motion", 2014),
+                new Lancamento("Funk Wav Bounces Vol. 1", 2017),
+                new Lancamento("Funk Wav Bounces Vol. 2", 2022)));
+        DISCOGRAFIAS.put("Demi Lovato", List.of(
+                new Lancamento("Don't Forget", 2008),
+                new Lancamento("Here We Go Again", 2009),
+                new Lancamento("Unbroken", 2011),
+                new Lancamento("Demi", 2013),
+                new Lancamento("Confident", 2015),
+                new Lancamento("Tell Me You Love Me", 2017),
+                new Lancamento("Dancing with the Devil... the Art of Starting Over", 2021),
+                new Lancamento("Holy Fvck", 2022),
+                new Lancamento("It's Not That Deep", 2025)));
+        DISCOGRAFIAS.put("Alok", List.of(
+                new Lancamento("O Futuro É Ancestral", 2024)));
+        DISCOGRAFIAS.put("Katy Perry", List.of(
+                new Lancamento("Katy Hudson", 2001),
+                new Lancamento("One of the Boys", 2008),
+                new Lancamento("Teenage Dream", 2010),
+                new Lancamento("Prism", 2013),
+                new Lancamento("Witness", 2017),
+                new Lancamento("Smile", 2020),
+                new Lancamento("143", 2024)));
+        DISCOGRAFIAS.put("Madonna", List.of(
+                new Lancamento("Madonna", 1983),
+                new Lancamento("Like a Virgin", 1984),
+                new Lancamento("True Blue", 1986),
+                new Lancamento("Like a Prayer", 1989),
+                new Lancamento("Erotica", 1992),
+                new Lancamento("Bedtime Stories", 1994),
+                new Lancamento("Ray of Light", 1998),
+                new Lancamento("Music", 2000),
+                new Lancamento("American Life", 2003),
+                new Lancamento("Confessions on a Dance Floor", 2005),
+                new Lancamento("Hard Candy", 2008),
+                new Lancamento("MDNA", 2012),
+                new Lancamento("Rebel Heart", 2015),
+                new Lancamento("Madame X", 2019),
+                new Lancamento("Confessions II", 2026)));
+        DISCOGRAFIAS.put("Dua Lipa", List.of(
+                new Lancamento("Dua Lipa", 2017),
+                new Lancamento("Future Nostalgia", 2020),
+                new Lancamento("Radical Optimism", 2024)));
+    }
+
+    static Stream<Arguments> albunsDasDiscografias() {
+        return DISCOGRAFIAS.entrySet().stream()
+                .flatMap(e -> e.getValue().stream().map(l -> arguments(e.getKey(), l.titulo(), l.ano())));
+    }
+
+    static Stream<String> artistasDasDiscografias() {
+        return DISCOGRAFIAS.keySet().stream();
+    }
+
+    @ParameterizedTest(name = "{0} - {1} ({2})")
+    @MethodSource("albunsDasDiscografias")
+    void criarDeveSalvarTodosOsAlbunsDaDiscografia(String nomeArtista, String titulo, int ano) {
+        when(artistaRepository.findById(1L)).thenReturn(Optional.of(artista(1L, nomeArtista)));
         when(albumRepository.save(any(Album.class))).thenAnswer(inv -> inv.getArgument(0));
 
         AlbumResponse response = albumService.criar(new AlbumRequest(titulo, ano, null, 1L));
 
         assertThat(response.titulo()).isEqualTo(titulo);
         assertThat(response.anoLancamento()).isEqualTo(ano);
-        assertThat(response.artistaNome()).isEqualTo("Taylor Swift");
+        assertThat(response.artistaNome()).isEqualTo(nomeArtista);
     }
 
-    @Test
-    void listarPorArtistaDeveRetornarDiscografiaCompletaDaTaylorSwift() {
-        Artista taylor = artista(1L, "Taylor Swift");
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("artistasDasDiscografias")
+    void listarPorArtistaDeveRetornarDiscografiaCompleta(String nomeArtista) {
+        Artista artista = artista(1L, nomeArtista);
+        List<Lancamento> lancamentos = DISCOGRAFIAS.get(nomeArtista);
         Pageable paginaCompleta = PageRequest.of(0, 20);
-        long[] id = {1};
-        List<Album> discografia = albunsTaylorSwift()
-                .map(Arguments::get)
-                .map(args -> album(id[0]++, taylor, (String) args[0], (Integer) args[1]))
-                .toList();
+        List<Album> discografia = new ArrayList<>();
+        for (int i = 0; i < lancamentos.size(); i++) {
+            Lancamento l = lancamentos.get(i);
+            discografia.add(album(i + 1L, artista, l.titulo(), l.ano()));
+        }
         when(artistaRepository.existsById(1L)).thenReturn(true);
         when(albumRepository.findByArtistaId(1L, paginaCompleta))
                 .thenReturn(new PageImpl<>(discografia, paginaCompleta, discografia.size()));
 
         Page<AlbumResponse> resultado = albumService.listarPorArtista(1L, paginaCompleta);
 
-        assertThat(resultado.getTotalElements()).isEqualTo(16);
+        assertThat(resultado.getTotalElements()).isEqualTo(lancamentos.size());
         assertThat(resultado.getContent())
                 .extracting(AlbumResponse::titulo)
-                .startsWith("Taylor Swift", "Fearless")
-                .endsWith("The Tortured Poets Department", "The Life of a Showgirl");
-        assertThat(resultado.getContent()).extracting(AlbumResponse::artistaNome).containsOnly("Taylor Swift");
+                .containsExactlyElementsOf(lancamentos.stream().map(Lancamento::titulo).toList());
+        assertThat(resultado.getContent()).extracting(AlbumResponse::artistaNome).containsOnly(nomeArtista);
     }
 
     @Test
