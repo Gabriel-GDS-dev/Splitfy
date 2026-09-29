@@ -1,0 +1,44 @@
+### Listar usuários
+GET http://localhost:8080/api/usuarios
+
+
+### Criar usuário
+POST http://localhost:8080/api/usuarios
+Content-Type: application/json
+
+{
+  "nome": "teste2 user",
+  "email": "teste2@gmail.com",
+  "senha": "1234567",
+  "dataNascimento": "2001-01-01",
+  "role": "USER"
+}
+
+
+### Buscar usuário
+GET http://localhost:8080/api/usuarios/1
+
+
+### Atualizar usuário
+PUT http://localhost:8080/api/usuarios/1
+Content-Type: application/json
+
+{
+  "nome": "teste usuario atualizado",
+  "email": "testeAtt@gmail.com",
+  "senha": "654321",
+  "dataNascimento": "2000-09-11",
+  "role": "USER"
+}
+
+
+### Desativar usuário
+DELETE http://localhost:8080/api/usuarios/1
+
+
+### Ativar usuário
+PATCH http://localhost:8080/api/usuarios/1/ativar
+
+
+### Buscar perfil
+GET http://localhost:8080/api/usuarios/1/perfil
