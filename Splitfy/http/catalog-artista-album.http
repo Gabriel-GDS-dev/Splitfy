@@ -1,9 +1,10 @@
 ### Catálogo - Artista e Álbum
 # Os ids assumem um banco vazio e a execução em ordem:
 #   artistas: 1 Taylor Swift, 2 Titãs, 3 Calvin Harris, 4 Demi Lovato, 5 Alok,
-#             6 Katy Perry, 7 Madonna, 8 Dua Lipa
-#   álbuns:   1 a 57 = discografias (álbuns de estúdio, em ordem de lançamento),
-#             58 = Cabeça Dinossauro
+#             6 Katy Perry, 7 Madonna, 8 Dua Lipa, 9 Kamaitachi, 10 Twenty One Pilots,
+#             11 Depeche Mode, 12 Roxette, 13 Cyndi Lauper, 14 New Order
+#   álbuns:   1 a 114 = discografias (álbuns de estúdio, em ordem de lançamento),
+#             115 = Cabeça Dinossauro
 
 @baseUrl = http://localhost:8080/api
 
@@ -83,6 +84,60 @@ Content-Type: application/json
 
 {
   "nome": "Dua Lipa",
+  "pais": "Reino Unido"
+}
+
+### Criar artista 9: Kamaitachi -> 201
+POST {{baseUrl}}/artistas
+Content-Type: application/json
+
+{
+  "nome": "Kamaitachi",
+  "pais": "Brasil"
+}
+
+### Criar artista 10: Twenty One Pilots -> 201
+POST {{baseUrl}}/artistas
+Content-Type: application/json
+
+{
+  "nome": "Twenty One Pilots",
+  "pais": "Estados Unidos"
+}
+
+### Criar artista 11: Depeche Mode -> 201
+POST {{baseUrl}}/artistas
+Content-Type: application/json
+
+{
+  "nome": "Depeche Mode",
+  "pais": "Reino Unido"
+}
+
+### Criar artista 12: Roxette -> 201
+POST {{baseUrl}}/artistas
+Content-Type: application/json
+
+{
+  "nome": "Roxette",
+  "pais": "Suécia"
+}
+
+### Criar artista 13: Cyndi Lauper -> 201
+POST {{baseUrl}}/artistas
+Content-Type: application/json
+
+{
+  "nome": "Cyndi Lauper",
+  "pais": "Estados Unidos"
+}
+
+### Criar artista 14: New Order -> 201
+POST {{baseUrl}}/artistas
+Content-Type: application/json
+
+{
+  "nome": "New Order",
   "pais": "Reino Unido"
 }
 
@@ -736,6 +791,601 @@ Content-Type: application/json
 }
 
 ############################################################
+# ÁLBUNS - discografia de Kamaitachi (ids 58 a 59)
+# (apenas os lançamentos mais recentes)
+############################################################
+
+### Criar álbum 1/2: Festa (2023) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Festa",
+  "anoLancamento": 2023,
+  "artistaId": 9
+}
+
+### Criar álbum 2/2: Acústico Kamaitachi (Ao Vivo) (2025) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Acústico Kamaitachi (Ao Vivo)",
+  "anoLancamento": 2025,
+  "artistaId": 9
+}
+
+############################################################
+# ÁLBUNS - discografia de Twenty One Pilots (ids 60 a 67)
+############################################################
+
+### Criar álbum 1/8: Twenty One Pilots (2009) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Twenty One Pilots",
+  "anoLancamento": 2009,
+  "artistaId": 10
+}
+
+### Criar álbum 2/8: Regional at Best (2011) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Regional at Best",
+  "anoLancamento": 2011,
+  "artistaId": 10
+}
+
+### Criar álbum 3/8: Vessel (2013) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Vessel",
+  "anoLancamento": 2013,
+  "artistaId": 10
+}
+
+### Criar álbum 4/8: Blurryface (2015) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Blurryface",
+  "anoLancamento": 2015,
+  "artistaId": 10
+}
+
+### Criar álbum 5/8: Trench (2018) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Trench",
+  "anoLancamento": 2018,
+  "artistaId": 10
+}
+
+### Criar álbum 6/8: Scaled and Icy (2021) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Scaled and Icy",
+  "anoLancamento": 2021,
+  "artistaId": 10
+}
+
+### Criar álbum 7/8: Clancy (2024) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Clancy",
+  "anoLancamento": 2024,
+  "artistaId": 10
+}
+
+### Criar álbum 8/8: Breach (2025) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Breach",
+  "anoLancamento": 2025,
+  "artistaId": 10
+}
+
+############################################################
+# ÁLBUNS - discografia de Depeche Mode (ids 68 a 82)
+############################################################
+
+### Criar álbum 1/15: Speak & Spell (1981) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Speak & Spell",
+  "anoLancamento": 1981,
+  "artistaId": 11
+}
+
+### Criar álbum 2/15: A Broken Frame (1982) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "A Broken Frame",
+  "anoLancamento": 1982,
+  "artistaId": 11
+}
+
+### Criar álbum 3/15: Construction Time Again (1983) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Construction Time Again",
+  "anoLancamento": 1983,
+  "artistaId": 11
+}
+
+### Criar álbum 4/15: Some Great Reward (1984) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Some Great Reward",
+  "anoLancamento": 1984,
+  "artistaId": 11
+}
+
+### Criar álbum 5/15: Black Celebration (1986) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Black Celebration",
+  "anoLancamento": 1986,
+  "artistaId": 11
+}
+
+### Criar álbum 6/15: Music for the Masses (1987) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Music for the Masses",
+  "anoLancamento": 1987,
+  "artistaId": 11
+}
+
+### Criar álbum 7/15: Violator (1990) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Violator",
+  "anoLancamento": 1990,
+  "artistaId": 11
+}
+
+### Criar álbum 8/15: Songs of Faith and Devotion (1993) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Songs of Faith and Devotion",
+  "anoLancamento": 1993,
+  "artistaId": 11
+}
+
+### Criar álbum 9/15: Ultra (1997) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Ultra",
+  "anoLancamento": 1997,
+  "artistaId": 11
+}
+
+### Criar álbum 10/15: Exciter (2001) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Exciter",
+  "anoLancamento": 2001,
+  "artistaId": 11
+}
+
+### Criar álbum 11/15: Playing the Angel (2005) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Playing the Angel",
+  "anoLancamento": 2005,
+  "artistaId": 11
+}
+
+### Criar álbum 12/15: Sounds of the Universe (2009) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Sounds of the Universe",
+  "anoLancamento": 2009,
+  "artistaId": 11
+}
+
+### Criar álbum 13/15: Delta Machine (2013) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Delta Machine",
+  "anoLancamento": 2013,
+  "artistaId": 11
+}
+
+### Criar álbum 14/15: Spirit (2017) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Spirit",
+  "anoLancamento": 2017,
+  "artistaId": 11
+}
+
+### Criar álbum 15/15: Memento Mori (2023) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Memento Mori",
+  "anoLancamento": 2023,
+  "artistaId": 11
+}
+
+############################################################
+# ÁLBUNS - discografia de Roxette (ids 83 a 92)
+############################################################
+
+### Criar álbum 1/10: Pearls of Passion (1986) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Pearls of Passion",
+  "anoLancamento": 1986,
+  "artistaId": 12
+}
+
+### Criar álbum 2/10: Look Sharp! (1988) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Look Sharp!",
+  "anoLancamento": 1988,
+  "artistaId": 12
+}
+
+### Criar álbum 3/10: Joyride (1991) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Joyride",
+  "anoLancamento": 1991,
+  "artistaId": 12
+}
+
+### Criar álbum 4/10: Tourism (1992) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Tourism",
+  "anoLancamento": 1992,
+  "artistaId": 12
+}
+
+### Criar álbum 5/10: Crash! Boom! Bang! (1994) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Crash! Boom! Bang!",
+  "anoLancamento": 1994,
+  "artistaId": 12
+}
+
+### Criar álbum 6/10: Have a Nice Day (1999) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Have a Nice Day",
+  "anoLancamento": 1999,
+  "artistaId": 12
+}
+
+### Criar álbum 7/10: Room Service (2001) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Room Service",
+  "anoLancamento": 2001,
+  "artistaId": 12
+}
+
+### Criar álbum 8/10: Charm School (2011) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Charm School",
+  "anoLancamento": 2011,
+  "artistaId": 12
+}
+
+### Criar álbum 9/10: Travelling (2012) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Travelling",
+  "anoLancamento": 2012,
+  "artistaId": 12
+}
+
+### Criar álbum 10/10: Good Karma (2016) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Good Karma",
+  "anoLancamento": 2016,
+  "artistaId": 12
+}
+
+############################################################
+# ÁLBUNS - discografia de Cyndi Lauper (ids 93 a 104)
+############################################################
+
+### Criar álbum 1/12: She's So Unusual (1983) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "She's So Unusual",
+  "anoLancamento": 1983,
+  "artistaId": 13
+}
+
+### Criar álbum 2/12: True Colors (1986) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "True Colors",
+  "anoLancamento": 1986,
+  "artistaId": 13
+}
+
+### Criar álbum 3/12: A Night to Remember (1989) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "A Night to Remember",
+  "anoLancamento": 1989,
+  "artistaId": 13
+}
+
+### Criar álbum 4/12: Hat Full of Stars (1993) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Hat Full of Stars",
+  "anoLancamento": 1993,
+  "artistaId": 13
+}
+
+### Criar álbum 5/12: Sisters of Avalon (1996) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Sisters of Avalon",
+  "anoLancamento": 1996,
+  "artistaId": 13
+}
+
+### Criar álbum 6/12: Merry Christmas... Have a Nice Life (1998) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Merry Christmas... Have a Nice Life",
+  "anoLancamento": 1998,
+  "artistaId": 13
+}
+
+### Criar álbum 7/12: At Last (2003) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "At Last",
+  "anoLancamento": 2003,
+  "artistaId": 13
+}
+
+### Criar álbum 8/12: Shine (2004) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Shine",
+  "anoLancamento": 2004,
+  "artistaId": 13
+}
+
+### Criar álbum 9/12: The Body Acoustic (2005) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "The Body Acoustic",
+  "anoLancamento": 2005,
+  "artistaId": 13
+}
+
+### Criar álbum 10/12: Bring Ya to the Brink (2008) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Bring Ya to the Brink",
+  "anoLancamento": 2008,
+  "artistaId": 13
+}
+
+### Criar álbum 11/12: Memphis Blues (2010) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Memphis Blues",
+  "anoLancamento": 2010,
+  "artistaId": 13
+}
+
+### Criar álbum 12/12: Detour (2016) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Detour",
+  "anoLancamento": 2016,
+  "artistaId": 13
+}
+
+############################################################
+# ÁLBUNS - discografia de New Order (ids 105 a 114)
+############################################################
+
+### Criar álbum 1/10: Movement (1981) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Movement",
+  "anoLancamento": 1981,
+  "artistaId": 14
+}
+
+### Criar álbum 2/10: Power, Corruption & Lies (1983) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Power, Corruption & Lies",
+  "anoLancamento": 1983,
+  "artistaId": 14
+}
+
+### Criar álbum 3/10: Low-Life (1985) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Low-Life",
+  "anoLancamento": 1985,
+  "artistaId": 14
+}
+
+### Criar álbum 4/10: Brotherhood (1986) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Brotherhood",
+  "anoLancamento": 1986,
+  "artistaId": 14
+}
+
+### Criar álbum 5/10: Technique (1989) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Technique",
+  "anoLancamento": 1989,
+  "artistaId": 14
+}
+
+### Criar álbum 6/10: Republic (1993) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Republic",
+  "anoLancamento": 1993,
+  "artistaId": 14
+}
+
+### Criar álbum 7/10: Get Ready (2001) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Get Ready",
+  "anoLancamento": 2001,
+  "artistaId": 14
+}
+
+### Criar álbum 8/10: Waiting for the Sirens' Call (2005) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Waiting for the Sirens' Call",
+  "anoLancamento": 2005,
+  "artistaId": 14
+}
+
+### Criar álbum 9/10: Lost Sirens (2013) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Lost Sirens",
+  "anoLancamento": 2013,
+  "artistaId": 14
+}
+
+### Criar álbum 10/10: Music Complete (2015) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Music Complete",
+  "anoLancamento": 2015,
+  "artistaId": 14
+}
+
+############################################################
 # ÁLBUNS - outros cenários
 ############################################################
 
@@ -806,7 +1456,7 @@ GET {{baseUrl}}/albuns/1
 GET {{baseUrl}}/albuns/9999
 
 ### Atualizar álbum trocando de artista -> 200 (Cabeça Dinossauro vai para os Titãs)
-PUT {{baseUrl}}/albuns/58
+PUT {{baseUrl}}/albuns/115
 Content-Type: application/json
 
 {
@@ -816,7 +1466,7 @@ Content-Type: application/json
 }
 
 ### ERRO: atualizar álbum para artista inexistente -> 404
-PUT {{baseUrl}}/albuns/58
+PUT {{baseUrl}}/albuns/115
 Content-Type: application/json
 
 {
@@ -836,7 +1486,7 @@ GET {{baseUrl}}/albuns/1/musicas
 DELETE {{baseUrl}}/artistas/1
 
 ### Excluir álbum -> 204
-DELETE {{baseUrl}}/albuns/58
+DELETE {{baseUrl}}/albuns/115
 
 ### ERRO: excluir álbum inexistente -> 404
 DELETE {{baseUrl}}/albuns/9999
