@@ -1,6 +1,9 @@
 ### Catálogo - Artista e Álbum
-# Os ids assumem um banco vazio: Taylor Swift = artista 1, Titãs = artista 2,
-# álbuns da Taylor = 1 a 16 (em ordem de lançamento) e Cabeça Dinossauro = 17.
+# Os ids assumem um banco vazio e a execução em ordem:
+#   artistas: 1 Taylor Swift, 2 Titãs, 3 Calvin Harris, 4 Demi Lovato, 5 Alok,
+#             6 Katy Perry, 7 Madonna, 8 Dua Lipa
+#   álbuns:   1 a 57 = discografias (álbuns de estúdio, em ordem de lançamento),
+#             58 = Cabeça Dinossauro
 
 @baseUrl = http://localhost:8080/api
 
@@ -27,6 +30,60 @@ Content-Type: application/json
   "nome": "Titãs",
   "pais": "Brasil",
   "inicioCarreira": "1982-01-01"
+}
+
+### Criar artista 3: Calvin Harris -> 201
+POST {{baseUrl}}/artistas
+Content-Type: application/json
+
+{
+  "nome": "Calvin Harris",
+  "pais": "Reino Unido"
+}
+
+### Criar artista 4: Demi Lovato -> 201
+POST {{baseUrl}}/artistas
+Content-Type: application/json
+
+{
+  "nome": "Demi Lovato",
+  "pais": "Estados Unidos"
+}
+
+### Criar artista 5: Alok -> 201
+POST {{baseUrl}}/artistas
+Content-Type: application/json
+
+{
+  "nome": "Alok",
+  "pais": "Brasil"
+}
+
+### Criar artista 6: Katy Perry -> 201
+POST {{baseUrl}}/artistas
+Content-Type: application/json
+
+{
+  "nome": "Katy Perry",
+  "pais": "Estados Unidos"
+}
+
+### Criar artista 7: Madonna -> 201
+POST {{baseUrl}}/artistas
+Content-Type: application/json
+
+{
+  "nome": "Madonna",
+  "pais": "Estados Unidos"
+}
+
+### Criar artista 8: Dua Lipa -> 201
+POST {{baseUrl}}/artistas
+Content-Type: application/json
+
+{
+  "nome": "Dua Lipa",
+  "pais": "Reino Unido"
 }
 
 ### ERRO: criar artista sem nome e com data futura -> 400 com errosDeCampo
@@ -79,7 +136,7 @@ Content-Type: application/json
 }
 
 ############################################################
-# ÁLBUNS - discografia da Taylor Swift
+# ÁLBUNS - discografia da Taylor Swift (ids 1 a 16)
 # (álbuns de estúdio e regravações Taylor's Version)
 ############################################################
 
@@ -245,6 +302,440 @@ Content-Type: application/json
 }
 
 ############################################################
+# ÁLBUNS - discografia de Calvin Harris (ids 17 a 22)
+############################################################
+
+### Criar álbum 1/6: I Created Disco (2007) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "I Created Disco",
+  "anoLancamento": 2007,
+  "artistaId": 3
+}
+
+### Criar álbum 2/6: Ready for the Weekend (2009) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Ready for the Weekend",
+  "anoLancamento": 2009,
+  "artistaId": 3
+}
+
+### Criar álbum 3/6: 18 Months (2012) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "18 Months",
+  "anoLancamento": 2012,
+  "artistaId": 3
+}
+
+### Criar álbum 4/6: Motion (2014) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Motion",
+  "anoLancamento": 2014,
+  "artistaId": 3
+}
+
+### Criar álbum 5/6: Funk Wav Bounces Vol. 1 (2017) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Funk Wav Bounces Vol. 1",
+  "anoLancamento": 2017,
+  "artistaId": 3
+}
+
+### Criar álbum 6/6: Funk Wav Bounces Vol. 2 (2022) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Funk Wav Bounces Vol. 2",
+  "anoLancamento": 2022,
+  "artistaId": 3
+}
+
+############################################################
+# ÁLBUNS - discografia de Demi Lovato (ids 23 a 31)
+############################################################
+
+### Criar álbum 1/9: Don't Forget (2008) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Don't Forget",
+  "anoLancamento": 2008,
+  "artistaId": 4
+}
+
+### Criar álbum 2/9: Here We Go Again (2009) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Here We Go Again",
+  "anoLancamento": 2009,
+  "artistaId": 4
+}
+
+### Criar álbum 3/9: Unbroken (2011) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Unbroken",
+  "anoLancamento": 2011,
+  "artistaId": 4
+}
+
+### Criar álbum 4/9: Demi (2013) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Demi",
+  "anoLancamento": 2013,
+  "artistaId": 4
+}
+
+### Criar álbum 5/9: Confident (2015) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Confident",
+  "anoLancamento": 2015,
+  "artistaId": 4
+}
+
+### Criar álbum 6/9: Tell Me You Love Me (2017) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Tell Me You Love Me",
+  "anoLancamento": 2017,
+  "artistaId": 4
+}
+
+### Criar álbum 7/9: Dancing with the Devil... the Art of Starting Over (2021) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Dancing with the Devil... the Art of Starting Over",
+  "anoLancamento": 2021,
+  "artistaId": 4
+}
+
+### Criar álbum 8/9: Holy Fvck (2022) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Holy Fvck",
+  "anoLancamento": 2022,
+  "artistaId": 4
+}
+
+### Criar álbum 9/9: It's Not That Deep (2025) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "It's Not That Deep",
+  "anoLancamento": 2025,
+  "artistaId": 4
+}
+
+############################################################
+# ÁLBUNS - discografia de Alok (id 32)
+############################################################
+
+### Criar álbum 1/1: O Futuro É Ancestral (2024) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "O Futuro É Ancestral",
+  "anoLancamento": 2024,
+  "artistaId": 5
+}
+
+############################################################
+# ÁLBUNS - discografia de Katy Perry (ids 33 a 39)
+############################################################
+
+### Criar álbum 1/7: Katy Hudson (2001) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Katy Hudson",
+  "anoLancamento": 2001,
+  "artistaId": 6
+}
+
+### Criar álbum 2/7: One of the Boys (2008) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "One of the Boys",
+  "anoLancamento": 2008,
+  "artistaId": 6
+}
+
+### Criar álbum 3/7: Teenage Dream (2010) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Teenage Dream",
+  "anoLancamento": 2010,
+  "artistaId": 6
+}
+
+### Criar álbum 4/7: Prism (2013) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Prism",
+  "anoLancamento": 2013,
+  "artistaId": 6
+}
+
+### Criar álbum 5/7: Witness (2017) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Witness",
+  "anoLancamento": 2017,
+  "artistaId": 6
+}
+
+### Criar álbum 6/7: Smile (2020) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Smile",
+  "anoLancamento": 2020,
+  "artistaId": 6
+}
+
+### Criar álbum 7/7: 143 (2024) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "143",
+  "anoLancamento": 2024,
+  "artistaId": 6
+}
+
+############################################################
+# ÁLBUNS - discografia de Madonna (ids 40 a 54)
+############################################################
+
+### Criar álbum 1/15: Madonna (1983) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Madonna",
+  "anoLancamento": 1983,
+  "artistaId": 7
+}
+
+### Criar álbum 2/15: Like a Virgin (1984) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Like a Virgin",
+  "anoLancamento": 1984,
+  "artistaId": 7
+}
+
+### Criar álbum 3/15: True Blue (1986) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "True Blue",
+  "anoLancamento": 1986,
+  "artistaId": 7
+}
+
+### Criar álbum 4/15: Like a Prayer (1989) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Like a Prayer",
+  "anoLancamento": 1989,
+  "artistaId": 7
+}
+
+### Criar álbum 5/15: Erotica (1992) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Erotica",
+  "anoLancamento": 1992,
+  "artistaId": 7
+}
+
+### Criar álbum 6/15: Bedtime Stories (1994) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Bedtime Stories",
+  "anoLancamento": 1994,
+  "artistaId": 7
+}
+
+### Criar álbum 7/15: Ray of Light (1998) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Ray of Light",
+  "anoLancamento": 1998,
+  "artistaId": 7
+}
+
+### Criar álbum 8/15: Music (2000) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Music",
+  "anoLancamento": 2000,
+  "artistaId": 7
+}
+
+### Criar álbum 9/15: American Life (2003) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "American Life",
+  "anoLancamento": 2003,
+  "artistaId": 7
+}
+
+### Criar álbum 10/15: Confessions on a Dance Floor (2005) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Confessions on a Dance Floor",
+  "anoLancamento": 2005,
+  "artistaId": 7
+}
+
+### Criar álbum 11/15: Hard Candy (2008) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Hard Candy",
+  "anoLancamento": 2008,
+  "artistaId": 7
+}
+
+### Criar álbum 12/15: MDNA (2012) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "MDNA",
+  "anoLancamento": 2012,
+  "artistaId": 7
+}
+
+### Criar álbum 13/15: Rebel Heart (2015) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Rebel Heart",
+  "anoLancamento": 2015,
+  "artistaId": 7
+}
+
+### Criar álbum 14/15: Madame X (2019) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Madame X",
+  "anoLancamento": 2019,
+  "artistaId": 7
+}
+
+### Criar álbum 15/15: Confessions II (2026) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Confessions II",
+  "anoLancamento": 2026,
+  "artistaId": 7
+}
+
+############################################################
+# ÁLBUNS - discografia de Dua Lipa (ids 55 a 57)
+############################################################
+
+### Criar álbum 1/3: Dua Lipa (2017) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Dua Lipa",
+  "anoLancamento": 2017,
+  "artistaId": 8
+}
+
+### Criar álbum 2/3: Future Nostalgia (2020) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Future Nostalgia",
+  "anoLancamento": 2020,
+  "artistaId": 8
+}
+
+### Criar álbum 3/3: Radical Optimism (2024) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Radical Optimism",
+  "anoLancamento": 2024,
+  "artistaId": 8
+}
+
+############################################################
 # ÁLBUNS - outros cenários
 ############################################################
 
@@ -290,8 +781,8 @@ Content-Type: application/json
 ### Listar álbuns (paginado)
 GET {{baseUrl}}/albuns?page=0&size=20&sort=anoLancamento,desc
 
-### Filtrar álbuns por ano (2023 -> as duas Taylor's Version do ano)
-GET {{baseUrl}}/albuns?ano=2023
+### Filtrar álbuns por ano (2020 -> folklore, evermore, Smile e Future Nostalgia)
+GET {{baseUrl}}/albuns?ano=2020
 
 ### Filtrar álbuns por artista
 GET {{baseUrl}}/albuns?artistaId=1&size=20
@@ -301,6 +792,9 @@ GET {{baseUrl}}/albuns?ano=2020&artistaId=1
 
 ### Álbuns do artista (paginado, discografia completa da Taylor)
 GET {{baseUrl}}/artistas/1/albuns?page=0&size=20&sort=anoLancamento,asc
+
+### Álbuns do artista (discografia da Madonna, de 1983 a 2026)
+GET {{baseUrl}}/artistas/7/albuns?page=0&size=20&sort=anoLancamento,asc
 
 ### ERRO: álbuns de artista inexistente -> 404
 GET {{baseUrl}}/artistas/9999/albuns
@@ -312,7 +806,7 @@ GET {{baseUrl}}/albuns/1
 GET {{baseUrl}}/albuns/9999
 
 ### Atualizar álbum trocando de artista -> 200 (Cabeça Dinossauro vai para os Titãs)
-PUT {{baseUrl}}/albuns/17
+PUT {{baseUrl}}/albuns/58
 Content-Type: application/json
 
 {
@@ -322,7 +816,7 @@ Content-Type: application/json
 }
 
 ### ERRO: atualizar álbum para artista inexistente -> 404
-PUT {{baseUrl}}/albuns/17
+PUT {{baseUrl}}/albuns/58
 Content-Type: application/json
 
 {
@@ -342,7 +836,7 @@ GET {{baseUrl}}/albuns/1/musicas
 DELETE {{baseUrl}}/artistas/1
 
 ### Excluir álbum -> 204
-DELETE {{baseUrl}}/albuns/17
+DELETE {{baseUrl}}/albuns/58
 
 ### ERRO: excluir álbum inexistente -> 404
 DELETE {{baseUrl}}/albuns/9999
