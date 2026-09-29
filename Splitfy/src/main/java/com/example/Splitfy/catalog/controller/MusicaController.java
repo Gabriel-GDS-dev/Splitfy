@@ -3,6 +3,7 @@ package com.example.Splitfy.catalog.controller;
 import com.example.Splitfy.catalog.dto.MusicaRequest;
 import com.example.Splitfy.catalog.dto.MusicaResponse;
 import com.example.Splitfy.catalog.service.MusicaService;
+import com.example.Splitfy.historico.dto.RegistrarReproducaoRequisicao;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -58,7 +59,7 @@ public class MusicaController {
     }
 
     @PostMapping("/{id}/play")
-    public MusicaResponse registrarPlay(@PathVariable Long id) {
-        return musicaService.registrarPlay(id);
+    public MusicaResponse registrarPlay(@PathVariable Long id, @RequestBody RegistrarReproducaoRequisicao requisicao) {
+        return musicaService.registrarPlay(id, requisicao.usuarioId());
     }
 }

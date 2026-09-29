@@ -170,7 +170,7 @@ async function apiRequest(path, options = {}) {
         let message = `HTTP ${response.status}`;
         try {
             const payload = await response.json();
-            message = payload.message || message;
+            message = payload.message || payload.detail || message;
         } catch (_error) {
             message = await response.text() || message;
         }
@@ -382,7 +382,16 @@ async function playMusic(id) {
             song.reproducoes += 1;
             state.latestPlayId = id;
         } else {
-            const updated = normalizeSong(await apiRequest(`/musicas/${id}/play`, { method: "POST" }));
+            const entradaUsuario = window.prompt("Informe o ID do usuário que vai ouvir esta música:");
+            if (entradaUsuario === null) return;
+            const usuarioId = Number(entradaUsuario);
+            if (!Number.isSafeInteger(usuarioId) || usuarioId <= 0) {
+                throw new Error("Informe um ID de usuário positivo.");
+            }
+            const updated = normalizeSong(await apiRequest(`/musicas/${id}/play`, {
+                method: "POST",
+                body: JSON.stringify({ usuarioId })
+            }));
             state.latestPlayId = updated.id;
             state.songs = state.songs.map((song) => song.id === updated.id ? updated : song);
         }
