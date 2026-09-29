@@ -18,6 +18,12 @@ Requisitos: Java 21 ou superior e PostgreSQL. O projeto inclui o Maven Wrapper, 
 
 O Flyway aplica as migrations de [`db/migration`](Splitfy/src/main/resources/db/migration/) na inicialização. A API fica em `http://localhost:8080/api`. Para rodar o teste existente, use `.\mvnw.cmd test` na mesma pasta; esse teste usa H2 e não substitui uma validação com PostgreSQL.
 
+Obs: Frontend rodando em:
+
+```powershell
+   http://localhost:63342/Splitfy/static/index.html
+   ```
+
 ## Responsabilidades e estado atual
 
 Cada integrante mantém sua seção abaixo. **"Banco disponível"** significa que a tabela já tem migration; **"API disponível"** significa que há código Java para atender requisições nesta branch. A presença da tabela, por si só, não indica que o CRUD esteja implementado.

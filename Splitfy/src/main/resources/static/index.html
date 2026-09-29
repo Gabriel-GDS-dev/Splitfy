@@ -3,242 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Splitfy - Catalogo</title>
+    <meta name="theme-color" content="#0b0d0e">
+    <title>Splitfy</title>
     <link rel="icon" href="data:,">
-    <link rel="stylesheet" href="/assets/styles.css">
+    <link rel="stylesheet" href="./assets/styles.css">
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <script defer src="/assets/app.js"></script>
+    <script defer src="./assets/app.js"></script>
 </head>
 <body>
 <div class="app-shell">
-    <aside class="sidebar" aria-label="Navegacao principal">
-        <a class="brand" href="#home" aria-label="Splitfy catalogo">
-            <span class="brand-mark">S</span>
-            <span>Splitfy</span>
+    <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
+        <a class="brand" href="#inicio" data-route="inicio" aria-label="Ir para o início">
+            <span class="brand-mark"><i data-lucide="audio-waveform"></i></span>
+            <span class="brand-name">Splitfy</span>
         </a>
 
-        <nav class="nav-list" aria-label="Modulos do catalogo">
-            <button class="nav-item is-active" type="button" data-view="home">
-                <i data-lucide="home"></i>
-                <span>Home</span>
-            </button>
-            <button class="nav-item" type="button" data-view="genres">
-                <i data-lucide="tags"></i>
-                <span>Generos</span>
-            </button>
-            <button class="nav-item" type="button" data-view="songs">
-                <i data-lucide="music-2"></i>
-                <span>Musicas</span>
-            </button>
-            <button class="nav-item" type="button" data-view="search">
-                <i data-lucide="search"></i>
-                <span>Busca</span>
-            </button>
+        <nav class="main-nav" aria-label="Áreas do Splitfy">
+            <span class="nav-label">Descobrir</span>
+            <button class="nav-item is-active" type="button" data-route="inicio"><i data-lucide="layout-dashboard"></i><span>Início</span></button>
+            <button class="nav-item" type="button" data-route="musicas"><i data-lucide="music-2"></i><span>Músicas</span></button>
+            <button class="nav-item" type="button" data-route="artistas"><i data-lucide="mic-2"></i><span>Artistas</span></button>
+            <button class="nav-item" type="button" data-route="albuns"><i data-lucide="disc-3"></i><span>Álbuns</span></button>
+            <button class="nav-item" type="button" data-route="generos"><i data-lucide="radio-tower"></i><span>Gêneros</span></button>
+
+            <span class="nav-label">Minha música</span>
+            <button class="nav-item" type="button" data-route="playlists"><i data-lucide="list-music"></i><span>Playlists</span></button>
+            <button class="nav-item" type="button" data-route="avaliacoes"><i data-lucide="heart"></i><span>Avaliações</span></button>
+            <button class="nav-item" type="button" data-route="historico"><i data-lucide="history"></i><span>Histórico</span></button>
+            <button class="nav-item" type="button" data-route="usuarios"><i data-lucide="users"></i><span>Usuários</span></button>
         </nav>
 
-        <div class="sidebar-panel">
-            <span class="eyebrow">Modulo</span>
-            <strong>Catalogo</strong>
-            <span>Gabriel - Genero e Musica</span>
+        <div class="connection-card">
+            <span class="connection-dot" id="connection-dot"></span>
+            <div><strong id="connection-label">Conectando</strong><span>API Splitfy</span></div>
         </div>
     </aside>
 
-    <main class="workspace">
-        <header class="topbar">
-            <div class="page-title">
-                <span class="eyebrow">Splitfy backend ready</span>
-                <h1>Catalogo de generos e musicas</h1>
-                <p>CRUD, filtros e play simulado preparados para consumir a API Spring Boot.</p>
-            </div>
+    <button class="sidebar-scrim" id="sidebar-scrim" type="button" aria-label="Fechar navegação"></button>
 
-            <form class="api-panel" id="api-settings">
-                <label for="api-base">API base</label>
-                <div class="api-row">
-                    <input id="api-base" name="apiBase" type="text" value="/api" autocomplete="off">
-                    <button class="icon-button" type="submit" title="Aplicar API">
-                        <i data-lucide="plug-zap"></i>
-                        <span class="sr-only">Aplicar API</span>
-                    </button>
-                </div>
-                <span class="status-pill" id="connection-status">Carregando</span>
-            </form>
+    <div class="app-main">
+        <header class="topbar">
+            <button class="icon-button mobile-menu" id="mobile-menu" type="button" title="Abrir menu"><i data-lucide="menu"></i></button>
+            <div class="search-box">
+                <i data-lucide="search"></i>
+                <input id="global-search" type="search" placeholder="Buscar nesta tela" autocomplete="off">
+                <kbd>Ctrl K</kbd>
+            </div>
+            <div class="user-switcher">
+                <label for="active-user">Usuário ativo</label>
+                <select id="active-user" aria-label="Selecionar usuário ativo"><option value="">Selecionar</option></select>
+            </div>
+            <button class="primary-button" id="context-create" type="button"><i data-lucide="plus"></i><span>Novo</span></button>
         </header>
 
-        <section class="view-panel" id="view-home" data-view-panel="home">
-            <div class="stats-grid" aria-label="Resumo do catalogo">
-                <article class="stat-card">
-                    <span>Generos</span>
-                    <strong id="stats-genres">0</strong>
-                </article>
-                <article class="stat-card">
-                    <span>Musicas</span>
-                    <strong id="stats-songs">0</strong>
-                </article>
-                <article class="stat-card">
-                    <span>Reproducoes</span>
-                    <strong id="stats-plays">0</strong>
-                </article>
-            </div>
-
-            <div class="home-grid">
-                <section class="panel">
-                    <div class="section-heading">
-                        <span class="eyebrow">Fluxo principal</span>
-                        <h2>Catalogo pronto para demonstracao</h2>
-                    </div>
-                    <div class="playlist-strip" id="featured-strip" aria-label="Musicas em destaque"></div>
-                </section>
-
-                <section class="panel now-playing">
-                    <div class="section-heading">
-                        <span class="eyebrow">Play simulado</span>
-                        <h2>Tocando agora</h2>
-                    </div>
-                    <div id="latest-play" class="empty-state">Nenhuma musica reproduzida nesta sessao.</div>
-                </section>
-            </div>
-        </section>
-
-        <section class="view-panel" id="view-genres" data-view-panel="genres" hidden>
-            <div class="split-layout">
-                <section class="panel">
-                    <div class="section-heading">
-                        <span class="eyebrow">CRUD</span>
-                        <h2 id="genre-form-title">Novo genero</h2>
-                    </div>
-                    <form id="genre-form" class="stack-form">
-                        <input id="genre-id" type="hidden">
-                        <label>
-                            Nome
-                            <input id="genre-name" type="text" maxlength="150" placeholder="Rock, Pop, MPB" required>
-                        </label>
-                        <label>
-                            Descricao
-                            <textarea id="genre-description" rows="4" placeholder="Resumo do estilo e contexto do genero"></textarea>
-                        </label>
-                        <div class="form-actions">
-                            <button class="primary-button" type="submit">
-                                <i data-lucide="save"></i>
-                                <span>Salvar</span>
-                            </button>
-                            <button class="ghost-button" id="cancel-genre-edit" type="button">Cancelar</button>
+        <main class="workspace">
+            <section class="view is-active" data-view="inicio">
+                <div class="dashboard-hero">
+                    <div class="hero-copy">
+                        <span class="eyebrow">Biblioteca conectada</span>
+                        <h1>Som para todos os momentos.</h1>
+                        <p id="hero-status">Seu catálogo em um só lugar.</p>
+                        <div class="hero-actions">
+                            <button class="primary-button" type="button" data-quick-action="musica"><i data-lucide="plus"></i><span>Adicionar música</span></button>
+                            <button class="secondary-button" type="button" data-route="playlists"><i data-lucide="list-music"></i><span>Ver playlists</span></button>
                         </div>
-                        <p class="form-feedback" id="genre-feedback" role="status"></p>
-                    </form>
-                </section>
-
-                <section class="panel">
-                    <div class="section-heading">
-                        <span class="eyebrow">Lista</span>
-                        <h2>Generos cadastrados</h2>
                     </div>
-                    <div class="item-list" id="genre-list"></div>
-                </section>
-            </div>
-
-            <section class="panel">
-                <div class="section-heading">
-                    <span class="eyebrow">RF07</span>
-                    <h2 id="selected-genre-title">Musicas por genero</h2>
+                    <div class="hero-art" aria-label="Seleção de capas Splitfy">
+                        <div class="hero-cover cover-art art-0"></div>
+                        <div class="hero-cover cover-art art-1"></div>
+                        <div class="hero-cover cover-art art-2"></div>
+                        <div class="hero-cover cover-art art-3"></div>
+                    </div>
                 </div>
-                <div class="song-grid compact" id="selected-genre-songs"></div>
-            </section>
-        </section>
 
-        <section class="view-panel" id="view-songs" data-view-panel="songs" hidden>
-            <div class="split-layout">
-                <section class="panel">
-                    <div class="section-heading">
-                        <span class="eyebrow">CRUD</span>
-                        <h2 id="music-form-title">Nova musica</h2>
-                    </div>
-                    <form id="music-form" class="stack-form">
-                        <input id="music-id" type="hidden">
-                        <label>
-                            Titulo
-                            <input id="music-title" type="text" maxlength="150" placeholder="Nome da musica" required>
-                        </label>
-                        <div class="form-row">
-                            <label>
-                                Duracao (segundos)
-                                <input id="music-duration" type="number" min="1" step="1" placeholder="210" required>
-                            </label>
-                            <label>
-                                Faixa
-                                <input id="music-track" type="number" min="1" step="1" placeholder="1">
-                            </label>
-                        </div>
-                        <div class="form-row">
-                            <label>
-                                Album ID
-                                <input id="music-album" type="number" min="1" step="1" placeholder="1" required>
-                            </label>
-                            <label>
-                                Genero
-                                <select id="music-genre" required></select>
-                            </label>
-                        </div>
-                        <div class="form-actions">
-                            <button class="primary-button" type="submit">
-                                <i data-lucide="save"></i>
-                                <span>Salvar</span>
-                            </button>
-                            <button class="ghost-button" id="cancel-music-edit" type="button">Cancelar</button>
-                        </div>
-                        <p class="helper-text">Album ID fica pronto para integrar com o CRUD de album da Karen.</p>
-                        <p class="form-feedback" id="music-feedback" role="status"></p>
-                    </form>
-                </section>
+                <div class="metric-strip" id="metric-strip"></div>
 
-                <section class="panel">
-                    <div class="section-heading">
-                        <span class="eyebrow">Catalogo</span>
-                        <h2>Musicas cadastradas</h2>
-                    </div>
-                    <div class="song-grid" id="music-list"></div>
-                </section>
-            </div>
-        </section>
-
-        <section class="view-panel" id="view-search" data-view-panel="search" hidden>
-            <section class="panel">
-                <div class="section-heading">
-                    <span class="eyebrow">RF09</span>
-                    <h2>Buscar por titulo, genero e album</h2>
+                <div class="dashboard-grid">
+                    <section class="content-block span-2">
+                        <div class="section-header">
+                            <div><span class="eyebrow">Em alta</span><h2>Mais reproduzidas</h2></div>
+                            <button class="text-button" type="button" data-route="musicas">Ver todas <i data-lucide="arrow-right"></i></button>
+                        </div>
+                        <div class="track-list" id="popular-tracks"></div>
+                    </section>
+                    <section class="content-block">
+                        <div class="section-header"><div><span class="eyebrow">Agora</span><h2>Reprodução atual</h2></div></div>
+                        <div id="now-playing-card" class="now-playing-card empty-slot"></div>
+                    </section>
                 </div>
-                <form id="search-form" class="filter-bar">
-                    <label>
-                        Titulo
-                        <input id="filter-title" type="search" placeholder="Digite parte do titulo">
-                    </label>
-                    <label>
-                        Genero
-                        <select id="filter-genre"></select>
-                    </label>
-                    <label>
-                        Album ID
-                        <input id="filter-album" type="number" min="1" step="1" placeholder="Todos">
-                    </label>
-                    <div class="filter-actions">
-                        <button class="primary-button" type="submit">
-                            <i data-lucide="search"></i>
-                            <span>Buscar</span>
-                        </button>
-                        <button class="ghost-button" id="clear-search" type="button">Limpar</button>
+
+                <section class="content-block">
+                    <div class="section-header">
+                        <div><span class="eyebrow">Lançamentos</span><h2>Álbuns da biblioteca</h2></div>
+                        <button class="text-button" type="button" data-route="albuns">Explorar <i data-lucide="arrow-right"></i></button>
                     </div>
-                </form>
+                    <div class="media-grid" id="featured-albums"></div>
+                </section>
             </section>
 
-            <section class="panel">
-                <div class="section-heading">
-                    <span class="eyebrow">Resultado</span>
-                    <h2>Musicas encontradas</h2>
+            <section class="view" data-view="musicas" hidden>
+                <div class="view-heading">
+                    <div><span class="eyebrow">Catálogo</span><h1>Músicas</h1><p id="songs-count"></p></div>
+                    <button class="primary-button" type="button" data-create="musica"><i data-lucide="plus"></i><span>Nova música</span></button>
                 </div>
-                <div class="song-grid" id="search-results"></div>
+                <div class="filter-row">
+                    <select id="songs-genre-filter" aria-label="Filtrar por gênero"><option value="">Todos os gêneros</option></select>
+                    <select id="songs-album-filter" aria-label="Filtrar por álbum"><option value="">Todos os álbuns</option></select>
+                    <button class="icon-button" id="clear-song-filters" type="button" title="Limpar filtros"><i data-lucide="filter-x"></i></button>
+                </div>
+                <div class="data-table" id="songs-table"></div>
             </section>
-        </section>
-    </main>
+
+            <section class="view" data-view="artistas" hidden>
+                <div class="view-heading">
+                    <div><span class="eyebrow">Catálogo</span><h1>Artistas</h1><p id="artists-count"></p></div>
+                    <button class="primary-button" type="button" data-create="artista"><i data-lucide="plus"></i><span>Novo artista</span></button>
+                </div>
+                <div class="artist-grid" id="artists-grid"></div>
+            </section>
+
+            <section class="view" data-view="albuns" hidden>
+                <div class="view-heading">
+                    <div><span class="eyebrow">Catálogo</span><h1>Álbuns</h1><p id="albums-count"></p></div>
+                    <button class="primary-button" type="button" data-create="album"><i data-lucide="plus"></i><span>Novo álbum</span></button>
+                </div>
+                <div class="media-grid album-library" id="albums-grid"></div>
+            </section>
+
+            <section class="view" data-view="generos" hidden>
+                <div class="view-heading">
+                    <div><span class="eyebrow">Catálogo</span><h1>Gêneros</h1><p id="genres-count"></p></div>
+                    <button class="primary-button" type="button" data-create="genero"><i data-lucide="plus"></i><span>Novo gênero</span></button>
+                </div>
+                <div class="genre-grid" id="genres-grid"></div>
+            </section>
+
+            <section class="view" data-view="playlists" hidden>
+                <div class="view-heading">
+                    <div><span class="eyebrow">Coleções</span><h1>Playlists</h1><p id="playlists-count"></p></div>
+                    <button class="primary-button" type="button" data-create="playlist"><i data-lucide="plus"></i><span>Nova playlist</span></button>
+                </div>
+                <div class="library-layout">
+                    <div class="playlist-list" id="playlists-list"></div>
+                    <section class="playlist-detail" id="playlist-detail"></section>
+                </div>
+            </section>
+
+            <section class="view" data-view="avaliacoes" hidden>
+                <div class="view-heading">
+                    <div><span class="eyebrow">Preferências</span><h1>Avaliações</h1><p id="reviews-count"></p></div>
+                    <button class="primary-button" type="button" data-create="avaliacao"><i data-lucide="plus"></i><span>Nova avaliação</span></button>
+                </div>
+                <div class="review-grid" id="reviews-grid"></div>
+            </section>
+
+            <section class="view" data-view="historico" hidden>
+                <div class="view-heading">
+                    <div><span class="eyebrow">Atividade</span><h1>Histórico</h1><p id="history-count"></p></div>
+                    <button class="secondary-button" id="refresh-history" type="button"><i data-lucide="refresh-cw"></i><span>Atualizar</span></button>
+                </div>
+                <div class="timeline" id="history-list"></div>
+            </section>
+
+            <section class="view" data-view="usuarios" hidden>
+                <div class="view-heading">
+                    <div><span class="eyebrow">Comunidade</span><h1>Usuários</h1><p id="users-count"></p></div>
+                    <button class="primary-button" type="button" data-create="usuario"><i data-lucide="user-plus"></i><span>Novo usuário</span></button>
+                </div>
+                <div class="data-table" id="users-table"></div>
+            </section>
+
+            <footer class="app-footer">
+                <div class="footer-brand"><i data-lucide="audio-waveform"></i><strong>Splitfy</strong></div>
+                <div class="authors">
+                    <span>Gabriel · Gêneros e músicas</span>
+                    <span>Karen · Artistas e álbuns</span>
+                    <span>Luis Gabriel · Histórico</span>
+                    <span>Airon · Usuários e perfis</span>
+                    <span>Victor · Playlists e avaliações</span>
+                </div>
+                <span class="footer-note">Projeto acadêmico · 2026</span>
+            </footer>
+        </main>
+    </div>
+
+    <section class="player-bar" aria-label="Player Splitfy">
+        <div class="player-track" id="player-track">
+            <div class="player-cover cover-art art-0"></div>
+            <div><strong>Nenhuma música tocando</strong><span>Escolha uma faixa</span></div>
+        </div>
+        <div class="player-controls">
+            <button class="player-button" id="player-previous" type="button" title="Faixa anterior" disabled><i data-lucide="skip-back"></i></button>
+            <button class="player-button player-main" id="player-toggle" type="button" title="Reproduzir" disabled><i data-lucide="play"></i></button>
+            <button class="player-button" id="player-next" type="button" title="Próxima faixa" disabled><i data-lucide="skip-forward"></i></button>
+        </div>
+        <div class="player-progress"><span id="player-progress"></span></div>
+        <div class="player-volume"><i data-lucide="volume-2"></i><input type="range" min="0" max="100" value="70" aria-label="Volume"></div>
+    </section>
 </div>
+
+<dialog class="editor-dialog" id="editor-dialog">
+    <form method="dialog" class="dialog-shell" id="editor-form">
+        <header class="dialog-header">
+            <div><span class="eyebrow" id="dialog-eyebrow">Cadastro</span><h2 id="dialog-title">Novo item</h2></div>
+            <button class="icon-button" type="button" data-dialog-close title="Fechar"><i data-lucide="x"></i></button>
+        </header>
+        <div class="dialog-body" id="dialog-fields"></div>
+        <p class="form-feedback" id="dialog-feedback" role="status"></p>
+        <footer class="dialog-actions">
+            <button class="secondary-button" type="button" data-dialog-close>Cancelar</button>
+            <button class="primary-button" type="submit"><i data-lucide="save"></i><span>Salvar</span></button>
+        </footer>
+    </form>
+</dialog>
+
+<dialog class="confirm-dialog" id="confirm-dialog">
+    <div class="confirm-shell">
+        <div class="confirm-icon"><i data-lucide="triangle-alert"></i></div>
+        <h2 id="confirm-title">Confirmar ação</h2>
+        <p id="confirm-message"></p>
+        <div class="dialog-actions">
+            <button class="secondary-button" id="confirm-cancel" type="button">Cancelar</button>
+            <button class="danger-button" id="confirm-action" type="button">Confirmar</button>
+        </div>
+    </div>
+</dialog>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
