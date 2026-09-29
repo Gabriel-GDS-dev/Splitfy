@@ -53,7 +53,13 @@ class ArtistaServiceTest {
             "Alok, Brasil",
             "Katy Perry, Estados Unidos",
             "Madonna, Estados Unidos",
-            "Dua Lipa, Reino Unido"
+            "Dua Lipa, Reino Unido",
+            "Kamaitachi, Brasil",
+            "Twenty One Pilots, Estados Unidos",
+            "Depeche Mode, Reino Unido",
+            "Roxette, Suécia",
+            "Cyndi Lauper, Estados Unidos",
+            "New Order, Reino Unido"
     })
     void criarDeveSalvarArtistasDoCatalogo(String nome, String pais) {
         when(artistaRepository.save(any(Artista.class))).thenAnswer(inv -> inv.getArgument(0));

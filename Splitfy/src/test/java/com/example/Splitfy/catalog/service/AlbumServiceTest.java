@@ -63,7 +63,8 @@ class AlbumServiceTest {
     }
 
     // Discografias usadas nos testes: álbuns de estúdio em ordem de lançamento.
-    // Para a Taylor Swift, inclui também as regravações (Taylor's Version).
+    // Para a Taylor Swift, inclui também as regravações (Taylor's Version);
+    // para o Kamaitachi, apenas os lançamentos mais recentes.
     private static final Map<String, List<Lancamento>> DISCOGRAFIAS = new LinkedHashMap<>();
 
     static {
@@ -131,6 +132,69 @@ class AlbumServiceTest {
                 new Lancamento("Dua Lipa", 2017),
                 new Lancamento("Future Nostalgia", 2020),
                 new Lancamento("Radical Optimism", 2024)));
+        DISCOGRAFIAS.put("Kamaitachi", List.of(
+                new Lancamento("Festa", 2023),
+                new Lancamento("Acústico Kamaitachi (Ao Vivo)", 2025)));
+        DISCOGRAFIAS.put("Twenty One Pilots", List.of(
+                new Lancamento("Twenty One Pilots", 2009),
+                new Lancamento("Regional at Best", 2011),
+                new Lancamento("Vessel", 2013),
+                new Lancamento("Blurryface", 2015),
+                new Lancamento("Trench", 2018),
+                new Lancamento("Scaled and Icy", 2021),
+                new Lancamento("Clancy", 2024),
+                new Lancamento("Breach", 2025)));
+        DISCOGRAFIAS.put("Depeche Mode", List.of(
+                new Lancamento("Speak & Spell", 1981),
+                new Lancamento("A Broken Frame", 1982),
+                new Lancamento("Construction Time Again", 1983),
+                new Lancamento("Some Great Reward", 1984),
+                new Lancamento("Black Celebration", 1986),
+                new Lancamento("Music for the Masses", 1987),
+                new Lancamento("Violator", 1990),
+                new Lancamento("Songs of Faith and Devotion", 1993),
+                new Lancamento("Ultra", 1997),
+                new Lancamento("Exciter", 2001),
+                new Lancamento("Playing the Angel", 2005),
+                new Lancamento("Sounds of the Universe", 2009),
+                new Lancamento("Delta Machine", 2013),
+                new Lancamento("Spirit", 2017),
+                new Lancamento("Memento Mori", 2023)));
+        DISCOGRAFIAS.put("Roxette", List.of(
+                new Lancamento("Pearls of Passion", 1986),
+                new Lancamento("Look Sharp!", 1988),
+                new Lancamento("Joyride", 1991),
+                new Lancamento("Tourism", 1992),
+                new Lancamento("Crash! Boom! Bang!", 1994),
+                new Lancamento("Have a Nice Day", 1999),
+                new Lancamento("Room Service", 2001),
+                new Lancamento("Charm School", 2011),
+                new Lancamento("Travelling", 2012),
+                new Lancamento("Good Karma", 2016)));
+        DISCOGRAFIAS.put("Cyndi Lauper", List.of(
+                new Lancamento("She's So Unusual", 1983),
+                new Lancamento("True Colors", 1986),
+                new Lancamento("A Night to Remember", 1989),
+                new Lancamento("Hat Full of Stars", 1993),
+                new Lancamento("Sisters of Avalon", 1996),
+                new Lancamento("Merry Christmas... Have a Nice Life", 1998),
+                new Lancamento("At Last", 2003),
+                new Lancamento("Shine", 2004),
+                new Lancamento("The Body Acoustic", 2005),
+                new Lancamento("Bring Ya to the Brink", 2008),
+                new Lancamento("Memphis Blues", 2010),
+                new Lancamento("Detour", 2016)));
+        DISCOGRAFIAS.put("New Order", List.of(
+                new Lancamento("Movement", 1981),
+                new Lancamento("Power, Corruption & Lies", 1983),
+                new Lancamento("Low-Life", 1985),
+                new Lancamento("Brotherhood", 1986),
+                new Lancamento("Technique", 1989),
+                new Lancamento("Republic", 1993),
+                new Lancamento("Get Ready", 2001),
+                new Lancamento("Waiting for the Sirens' Call", 2005),
+                new Lancamento("Lost Sirens", 2013),
+                new Lancamento("Music Complete", 2015)));
     }
 
     static Stream<Arguments> albunsDasDiscografias() {
