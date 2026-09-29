@@ -1,4 +1,6 @@
 ### Catálogo - Artista e Álbum
+# Os ids assumem um banco vazio: Taylor Swift = artista 1, Titãs = artista 2,
+# álbuns da Taylor = 1 a 16 (em ordem de lançamento) e Cabeça Dinossauro = 17.
 
 @baseUrl = http://localhost:8080/api
 
@@ -11,10 +13,10 @@ POST {{baseUrl}}/artistas
 Content-Type: application/json
 
 {
-  "nome": "Pitty",
-  "biografia": "Cantora e compositora baiana de rock.",
-  "pais": "Brasil",
-  "inicioCarreira": "2002-01-01"
+  "nome": "Taylor Swift",
+  "biografia": "Cantora e compositora norte-americana.",
+  "pais": "Estados Unidos",
+  "inicioCarreira": "2006-10-24"
 }
 
 ### Criar segundo artista -> 201
@@ -46,7 +48,7 @@ Content-Type: application/json
 GET {{baseUrl}}/artistas?page=0&size=10&sort=nome,asc
 
 ### Buscar artistas por nome (parcial, ignora maiúsculas)
-GET {{baseUrl}}/artistas?nome=pit
+GET {{baseUrl}}/artistas?nome=swift
 
 ### Buscar artista por id -> 200
 GET {{baseUrl}}/artistas/1
@@ -62,10 +64,10 @@ PUT {{baseUrl}}/artistas/1
 Content-Type: application/json
 
 {
-  "nome": "Pitty",
-  "biografia": "Biografia atualizada.",
-  "pais": "Brasil",
-  "inicioCarreira": "2002-01-01"
+  "nome": "Taylor Swift",
+  "biografia": "Cantora e compositora norte-americana, uma das artistas mais premiadas do Grammy.",
+  "pais": "Estados Unidos",
+  "inicioCarreira": "2006-10-24"
 }
 
 ### ERRO: atualizar artista inexistente -> 404
@@ -76,35 +78,184 @@ Content-Type: application/json
   "nome": "Ninguém"
 }
 
-### Álbuns do artista (paginado)
-GET {{baseUrl}}/artistas/1/albuns?page=0&size=10
-
-### ERRO: álbuns de artista inexistente -> 404
-GET {{baseUrl}}/artistas/9999/albuns
-
 ############################################################
-# ÁLBUNS
+# ÁLBUNS - discografia da Taylor Swift
+# (álbuns de estúdio e regravações Taylor's Version)
 ############################################################
 
-### Criar álbum -> 201 + Location
+### Criar álbum 1/16: Taylor Swift (2006) -> 201 + Location
 POST {{baseUrl}}/albuns
 Content-Type: application/json
 
 {
-  "titulo": "Admirável Chip Novo",
-  "anoLancamento": 2003,
-  "capaUrl": "https://example.com/capas/admiravel-chip-novo.jpg",
+  "titulo": "Taylor Swift",
+  "anoLancamento": 2006,
+  "capaUrl": "https://example.com/capas/taylor-swift.jpg",
   "artistaId": 1
 }
 
-### Criar outro álbum -> 201
+### Criar álbum 2/16: Fearless (2008) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Fearless",
+  "anoLancamento": 2008,
+  "artistaId": 1
+}
+
+### Criar álbum 3/16: Speak Now (2010) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Speak Now",
+  "anoLancamento": 2010,
+  "artistaId": 1
+}
+
+### Criar álbum 4/16: Red (2012) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Red",
+  "anoLancamento": 2012,
+  "artistaId": 1
+}
+
+### Criar álbum 5/16: 1989 (2014) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "1989",
+  "anoLancamento": 2014,
+  "artistaId": 1
+}
+
+### Criar álbum 6/16: reputation (2017) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "reputation",
+  "anoLancamento": 2017,
+  "artistaId": 1
+}
+
+### Criar álbum 7/16: Lover (2019) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Lover",
+  "anoLancamento": 2019,
+  "artistaId": 1
+}
+
+### Criar álbum 8/16: folklore (2020) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "folklore",
+  "anoLancamento": 2020,
+  "artistaId": 1
+}
+
+### Criar álbum 9/16: evermore (2020) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "evermore",
+  "anoLancamento": 2020,
+  "artistaId": 1
+}
+
+### Criar álbum 10/16: Fearless (Taylor's Version) (2021) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Fearless (Taylor's Version)",
+  "anoLancamento": 2021,
+  "artistaId": 1
+}
+
+### Criar álbum 11/16: Red (Taylor's Version) (2021) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Red (Taylor's Version)",
+  "anoLancamento": 2021,
+  "artistaId": 1
+}
+
+### Criar álbum 12/16: Midnights (2022) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Midnights",
+  "anoLancamento": 2022,
+  "artistaId": 1
+}
+
+### Criar álbum 13/16: Speak Now (Taylor's Version) (2023) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "Speak Now (Taylor's Version)",
+  "anoLancamento": 2023,
+  "artistaId": 1
+}
+
+### Criar álbum 14/16: 1989 (Taylor's Version) (2023) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "1989 (Taylor's Version)",
+  "anoLancamento": 2023,
+  "artistaId": 1
+}
+
+### Criar álbum 15/16: The Tortured Poets Department (2024) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "The Tortured Poets Department",
+  "anoLancamento": 2024,
+  "artistaId": 1
+}
+
+### Criar álbum 16/16: The Life of a Showgirl (2025) -> 201
+POST {{baseUrl}}/albuns
+Content-Type: application/json
+
+{
+  "titulo": "The Life of a Showgirl",
+  "anoLancamento": 2025,
+  "artistaId": 1
+}
+
+############################################################
+# ÁLBUNS - outros cenários
+############################################################
+
+### Criar álbum com o artista errado -> 201 (corrigido no PUT mais abaixo)
 POST {{baseUrl}}/albuns
 Content-Type: application/json
 
 {
   "titulo": "Cabeça Dinossauro",
   "anoLancamento": 1986,
-  "artistaId": 2
+  "artistaId": 1
 }
 
 ### ERRO: artista inexistente -> 404
@@ -137,16 +288,22 @@ Content-Type: application/json
 }
 
 ### Listar álbuns (paginado)
-GET {{baseUrl}}/albuns?page=0&size=10&sort=anoLancamento,desc
+GET {{baseUrl}}/albuns?page=0&size=20&sort=anoLancamento,desc
 
-### Filtrar álbuns por ano
-GET {{baseUrl}}/albuns?ano=2003
+### Filtrar álbuns por ano (2023 -> as duas Taylor's Version do ano)
+GET {{baseUrl}}/albuns?ano=2023
 
 ### Filtrar álbuns por artista
-GET {{baseUrl}}/albuns?artistaId=1
+GET {{baseUrl}}/albuns?artistaId=1&size=20
 
-### Filtrar álbuns por ano + artista
-GET {{baseUrl}}/albuns?ano=2003&artistaId=1
+### Filtrar álbuns por ano + artista (2020 -> folklore e evermore)
+GET {{baseUrl}}/albuns?ano=2020&artistaId=1
+
+### Álbuns do artista (paginado, discografia completa da Taylor)
+GET {{baseUrl}}/artistas/1/albuns?page=0&size=20&sort=anoLancamento,asc
+
+### ERRO: álbuns de artista inexistente -> 404
+GET {{baseUrl}}/artistas/9999/albuns
 
 ### Buscar álbum por id -> 200
 GET {{baseUrl}}/albuns/1
@@ -154,23 +311,23 @@ GET {{baseUrl}}/albuns/1
 ### ERRO: álbum inexistente -> 404
 GET {{baseUrl}}/albuns/9999
 
-### Atualizar álbum trocando de artista -> 200
-PUT {{baseUrl}}/albuns/1
+### Atualizar álbum trocando de artista -> 200 (Cabeça Dinossauro vai para os Titãs)
+PUT {{baseUrl}}/albuns/17
 Content-Type: application/json
 
 {
-  "titulo": "Admirável Chip Novo (Remaster)",
-  "anoLancamento": 2003,
+  "titulo": "Cabeça Dinossauro",
+  "anoLancamento": 1986,
   "artistaId": 2
 }
 
 ### ERRO: atualizar álbum para artista inexistente -> 404
-PUT {{baseUrl}}/albuns/1
+PUT {{baseUrl}}/albuns/17
 Content-Type: application/json
 
 {
-  "titulo": "Admirável Chip Novo",
-  "anoLancamento": 2003,
+  "titulo": "Cabeça Dinossauro",
+  "anoLancamento": 1986,
   "artistaId": 9999
 }
 
@@ -181,14 +338,14 @@ GET {{baseUrl}}/albuns/1/musicas
 # EXCLUSÕES (rode por último)
 ############################################################
 
-### ERRO: excluir artista com álbuns -> 409
-DELETE {{baseUrl}}/artistas/2
+### ERRO: excluir artista com álbuns -> 409 (Taylor Swift tem 16 álbuns)
+DELETE {{baseUrl}}/artistas/1
 
 ### Excluir álbum -> 204
-DELETE {{baseUrl}}/albuns/1
+DELETE {{baseUrl}}/albuns/17
 
 ### ERRO: excluir álbum inexistente -> 404
 DELETE {{baseUrl}}/albuns/9999
 
-### Excluir artista sem álbuns -> 204 (Pitty ficou sem álbuns depois da troca e da exclusão acima)
-DELETE {{baseUrl}}/artistas/1
+### Excluir artista sem álbuns -> 204 (Titãs ficou sem álbuns depois da exclusão acima)
+DELETE {{baseUrl}}/artistas/2
