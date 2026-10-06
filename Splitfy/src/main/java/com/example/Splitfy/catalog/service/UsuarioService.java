@@ -6,6 +6,10 @@ import com.example.Splitfy.catalog.entity.Usuario;
 import com.example.Splitfy.catalog.exception.UsuarioNotFoundException;
 import com.example.Splitfy.catalog.exception.UsuarioValidationException;
 import com.example.Splitfy.catalog.repository.UsuarioRepository;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,9 +22,11 @@ import java.util.Map;
 @Service
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional(readOnly = true)
@@ -42,11 +48,17 @@ public class UsuarioService {
 
         String email = normalizarEmail(request.email());
         String role = normalizarRole(request.role());
+        if (!administradorAutenticado()) {
+            if ("ADMIN".equals(role)) {
+                throw new AccessDeniedException("Apenas administradores podem atribuir a role ADMIN.");
+            }
+            role = "USER";
+        }
 
         Usuario usuario = new Usuario(
                 limparObrigatorio(request.nome()),
                 email,
-                request.senha(),
+                passwordEncoder.encode(request.senha()),
                 parseData(request.dataNascimento()),
                 role
         );
@@ -65,7 +77,7 @@ public class UsuarioService {
         usuario.setRole(normalizarRole(request.role()));
 
         if (request.senha() != null && !request.senha().trim().isEmpty()) {
-            usuario.setSenhaHash(request.senha());
+            usuario.setSenhaHash(passwordEncoder.encode(request.senha()));
         }
 
         return toResponse(usuarioRepository.save(usuario));
@@ -115,6 +127,9 @@ public class UsuarioService {
 
         if (senhaObrigatoria &&
                 (request.senha() == null || request.senha().trim().length() < 6)) {
+            campos.put("senha", "Senha deve possuir pelo menos 6 caracteres.");
+        } else if (!senhaObrigatoria && request.senha() != null &&
+                !request.senha().trim().isEmpty() && request.senha().trim().length() < 6) {
             campos.put("senha", "Senha deve possuir pelo menos 6 caracteres.");
         }
 
@@ -182,6 +197,12 @@ public class UsuarioService {
 
     private String limparObrigatorio(String valor) {
         return valor.trim();
+    }
+
+    private boolean administradorAutenticado() {
+        Authentication autenticacao = SecurityContextHolder.getContext().getAuthentication();
+        return autenticacao != null && autenticacao.getAuthorities().stream()
+                .anyMatch(permissao -> "ROLE_ADMIN".equals(permissao.getAuthority()));
     }
 
     private UsuarioResponse toResponse(Usuario usuario) {

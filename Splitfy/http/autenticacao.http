@@ -1,0 +1,37 @@
+# Autenticação e autorização — Luis Gabriel
+# Defina SPLITFY_JWT_SECRET antes de iniciar a aplicação.
+# Cadastre um usuário USER pela API; a promoção inicial para ADMIN é manual no banco.
+
+@endereco = http://localhost:8080
+@tokenAcesso = COLE_O_TOKEN_DE_ACESSO_AQUI
+
+### Cadastrar usuário USER sem token — HTTP 201
+POST {{endereco}}/api/usuarios
+Content-Type: application/json
+
+{
+  "nome": "username",
+  "email": "user@email",
+  "senha": "senhaDeExemplo123",
+  "dataNascimento": "2000-01-01"
+}
+
+### Fazer login — HTTP 200
+POST {{endereco}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@email",
+  "senha": "senhaDeExemplo123"
+}
+
+### Consultar recurso protegido — HTTP 200 com token válido
+GET {{endereco}}/api/usuarios/1/historico
+Authorization: Bearer {{tokenAcesso}}
+
+### Sem token — HTTP 401
+GET {{endereco}}/api/usuarios/1/historico
+
+# USER não pode listar usuários nem alterar o catálogo (HTTP 403).
+# Para criar o primeiro ADMIN, promova o usuário no PostgreSQL e faça novo login:
+# UPDATE usuario SET role = 'ADMIN' WHERE email = 'user@email';

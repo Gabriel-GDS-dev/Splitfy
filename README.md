@@ -10,7 +10,13 @@ Requisitos: Java 21 ou superior e PostgreSQL. O projeto inclui o Maven Wrapper, 
 
 1. Tenha um banco PostgreSQL chamado `Splitfy`, ou ajuste a URL de conexão para o nome do seu banco.
 2. Confira usuário, senha e URL em [`application.properties`](Splitfy/src/main/resources/application.properties). Para usar uma senha local sem editar esse arquivo, defina `SPRING_DATASOURCE_PASSWORD` no ambiente. Também é possível definir `SPRING_DATASOURCE_USERNAME` e `SPRING_DATASOURCE_URL`.
-3. Na pasta `Splitfy/`, execute:
+3. Defina uma chave para assinar os JWTs. No PowerShell, gere uma chave para o ambiente local antes de iniciar a aplicação:
+
+   ```powershell
+   $env:SPLITFY_JWT_SECRET = [Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32))
+   ```
+
+4. Na pasta `Splitfy/`, execute:
 
    ```powershell
    .\mvnw.cmd spring-boot:run
@@ -34,7 +40,10 @@ Cada integrante mantém sua seção abaixo. **"Banco disponível"** significa qu
 - **API disponível nesta branch:** `POST /api/musicas/{id}/play` recebe `{"usuarioId": 1}`, incrementa o contador da música e grava uma reprodução na mesma transação. `GET /api/usuarios/{usuarioId}/historico` lista as reproduções da mais recente para a mais antiga; o parâmetro opcional `limite` vai de 1 a 100, com padrão 20.
 - **Pré-requisito:** usuário e música precisam existir no banco. Nesta etapa, o ID do usuário é informado na requisição. O histórico registra e consulta reproduções; não oferece atualização ou exclusão de registros.
 - **Validação:** exemplos em [`historico-reproducao.http`](Splitfy/http/historico-reproducao.http). O histórico, o contador e o desfazimento conjunto em caso de falha foram verificados em PostgreSQL 17.4 temporário.
-- **Pendente nesta branch:** login com JWT, Spring Security e autorização USER/ADMIN.
+- **Segurança:** `POST /api/auth/login` recebe `{"email":"usuario@exemplo.com","senha":"suaSenha"}` e devolve `tokenAcesso`, `tipo` (`Bearer`) e `expiraEmSegundos` (3600). Envie `Authorization: Bearer <tokenAcesso>` nas demais chamadas da API. O token é assinado com `SPLITFY_JWT_SECRET`; não há refresh token.
+- **Senhas e papéis:** novos cadastros e alterações de senha usam BCrypt. Senhas antigas em texto puro são convertidas para BCrypt no primeiro login correto. `POST /api/usuarios` permanece público para cadastrar usuários USER; somente um ADMIN autenticado pode atribuir ADMIN. Para preparar o primeiro administrador em um banco novo, cadastre um usuário e promova-o diretamente no banco com `UPDATE usuario SET role = 'ADMIN' WHERE email = 'usuario@exemplo.com';`, depois faça login novamente.
+- **Autorização:** listar, consultar, atualizar e ativar/desativar usuários, além de alterar o catálogo, exige ADMIN. Histórico e play aceitam o próprio usuário ou ADMIN. Os demais endpoints da API exigem um token válido. Alterações de role ou desativação passam a valer para tokens já emitidos quando eles expirarem. O frontend de referência ainda não envia o token; valide a API pelas requisições HTTP.
+- **Validação:** exemplos em [`autenticacao.http`](Splitfy/http/autenticacao.http) e [`historico-reproducao.http`](Splitfy/http/historico-reproducao.http).
 
 ### Gabriel — gênero e música
 

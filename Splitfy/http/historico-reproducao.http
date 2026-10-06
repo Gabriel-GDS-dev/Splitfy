@@ -5,18 +5,19 @@
 # e SPRING_DATASOURCE_PASSWORD no ambiente antes de iniciar a aplicação.
 # Substitua os IDs abaixo por registros existentes no seu banco de testes.
 # O usuário precisa existir na tabela usuario; a música precisa estar cadastrada.
-# Enquanto a API de usuários não estiver integrada, prepare o usuário diretamente
-# no banco de testes. O módulo de histórico não cadastra usuários.
-# Nesta etapa, usuarioId é informado manualmente e não comprova autenticação.
+# Faça login em /api/auth/login e cole o tokenAcesso abaixo. O usuarioId deve
+# ser o ID do titular do token; um ADMIN também pode acessar outro usuário.
 
 @endereco = http://localhost:8080
 @usuarioId = 1
 @musicaId = 1
+@tokenAcesso = COLE_O_TOKEN_DE_ACESSO_AQUI
 
 ### Registrar reprodução — HTTP 200, com o contador atualizado da música
 # Cada chamada cria um registro de histórico, mesmo repetindo usuário e música.
 POST {{endereco}}/api/musicas/{{musicaId}}/play
 Content-Type: application/json
+Authorization: Bearer {{tokenAcesso}}
 
 {
   "usuarioId": {{usuarioId}}
@@ -28,14 +29,17 @@ Content-Type: application/json
 # Ordenação: reproduzidoEm decrescente e id decrescente em caso de empate.
 # Um usuário existente sem reproduções recebe [].
 GET {{endereco}}/api/usuarios/{{usuarioId}}/historico
+Authorization: Bearer {{tokenAcesso}}
 
 ### Consultar somente a reprodução mais recente — HTTP 200
 # O limite deve estar entre 1 e 100.
 GET {{endereco}}/api/usuarios/{{usuarioId}}/historico?limite=1
+Authorization: Bearer {{tokenAcesso}}
 
-### Rejeitar usuário inválido — HTTP 400, sem alterar contador ou histórico
+### Rejeitar play em nome de outro usuário — HTTP 403, sem alterar contador ou histórico
 POST {{endereco}}/api/musicas/{{musicaId}}/play
 Content-Type: application/json
+Authorization: Bearer {{tokenAcesso}}
 
 {
   "usuarioId": 0
@@ -43,8 +47,9 @@ Content-Type: application/json
 
 ### Rejeitar limite inválido — HTTP 400
 GET {{endereco}}/api/usuarios/{{usuarioId}}/historico?limite=101
+Authorization: Bearer {{tokenAcesso}}
 
-# Usuário ou música inexistente deve retornar HTTP 404.
+# Com token ADMIN, usuário ou música inexistente deve retornar HTTP 404.
 # Confira também que um segundo usuário recebe apenas suas próprias reproduções.
-# No botão de play da interface existente, informe um ID de usuário válido.
+# A interface de referência ainda não envia o Bearer token.
 # A prévia com dados locais da interface não persiste histórico no PostgreSQL.
