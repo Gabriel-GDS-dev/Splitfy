@@ -4,6 +4,7 @@ import com.example.Splitfy.catalog.dto.MusicaRequest;
 import com.example.Splitfy.catalog.dto.MusicaResponse;
 import com.example.Splitfy.catalog.service.MusicaService;
 import com.example.Splitfy.historico.dto.RegistrarReproducaoRequisicao;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -62,6 +63,7 @@ public class MusicaController {
     }
 
     @PostMapping("/{id}/play")
+    @PreAuthorize("#p1 != null and #p1.usuarioId() != null and (hasRole('ADMIN') or #p1.usuarioId().toString() == authentication.name)")
     public MusicaResponse registrarPlay(@PathVariable Long id, @RequestBody RegistrarReproducaoRequisicao requisicao) {
         return musicaService.registrarPlay(id, requisicao.usuarioId());
     }

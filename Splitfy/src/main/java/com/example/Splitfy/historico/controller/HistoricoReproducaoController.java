@@ -3,6 +3,7 @@ package com.example.Splitfy.historico.controller;
 import com.example.Splitfy.historico.dto.HistoricoReproducaoResposta;
 import com.example.Splitfy.historico.service.HistoricoReproducaoService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +22,7 @@ public class HistoricoReproducaoController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN') or #p0.toString() == authentication.name")
     public List<HistoricoReproducaoResposta> consultar(
             @PathVariable Long usuarioId,
             @RequestParam(defaultValue = "20") int limite
