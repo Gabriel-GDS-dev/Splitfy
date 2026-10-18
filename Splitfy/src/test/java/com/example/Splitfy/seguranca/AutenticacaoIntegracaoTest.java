@@ -1,8 +1,11 @@
 package com.example.Splitfy.seguranca;
 
+import com.jayway.jsonpath.JsonPath;
 import com.example.Splitfy.catalog.entity.Usuario;
 import com.example.Splitfy.catalog.repository.UsuarioRepository;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
@@ -29,7 +32,7 @@ class AutenticacaoIntegracaoTest {
 
     @Test
     void loginJwtRolesEPropriedadeDoHistorico() throws Exception {
-        Usuario usuario = usuarios.save(new Usuario("Luis", "luis-teste@splitfy.local", "senhaAntiga123",
+        Usuario usuario = usuarios.save(new Usuario("Usuario", "usuario-teste@splitfy.local", "senhaAntiga123",
                 LocalDate.of(2000, 1, 1), "USER"));
         Usuario outro = usuarios.save(new Usuario("Outro", "outro-teste@splitfy.local",
                 senhas.encode("senhaOutro123"), LocalDate.of(2000, 1, 1), "USER"));
@@ -38,10 +41,10 @@ class AutenticacaoIntegracaoTest {
 
         mvc.perform(get("/api/usuarios")).andExpect(status().isUnauthorized());
         mvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON)
-                .content("{\"email\":\"luis-teste@splitfy.local\",\"senha\":\"errada\"}"))
+                .content("{\"email\":\"usuario-teste@splitfy.local\",\"senha\":\"errada\"}"))
                 .andExpect(status().isUnauthorized());
 
-        String tokenUsuario = login("luis-teste@splitfy.local", "senhaAntiga123");
+        String tokenUsuario = login("usuario-teste@splitfy.local", "senhaAntiga123");
         assertThat(usuarios.findById(usuario.getId()).orElseThrow().getSenhaHash()).startsWith("$2");
         mvc.perform(get("/api/usuarios").header("Authorization", "Bearer " + tokenUsuario))
                 .andExpect(status().isForbidden());
@@ -85,6 +88,31 @@ class AutenticacaoIntegracaoTest {
         Usuario novo = usuarios.findByEmailIgnoreCase("novo-teste@splitfy.local").orElseThrow();
         assertThat(novo.getRole()).isEqualTo("USER");
         assertThat(senhas.matches("senhaNova123", novo.getSenhaHash())).isTrue();
+    }
+
+    @Test
+    void swaggerDocumentaSomenteAsOperacoesDeSegurancaEHistorico() throws Exception {
+        String configuracao = mvc.perform(get("/v3/api-docs/swagger-config"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        String caminhoGrupo = JsonPath.read(configuracao, "$.urls[0].url");
+        String especificacao = mvc.perform(get(caminhoGrupo))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        Map<String, Object> caminhos = JsonPath.read(especificacao, "$.paths");
+        assertThat(caminhos.keySet()).containsExactlyInAnyOrder(
+                "/api/auth/login", "/api/usuarios/{usuarioId}/historico", "/api/musicas/{id}/play");
+        Map<String, Object> login = JsonPath.read(especificacao, "$.paths['/api/auth/login'].post");
+        assertThat(login).doesNotContainKey("security");
+        List<Map<String, Object>> segurancaHistorico = JsonPath.read(especificacao,
+                "$.paths['/api/usuarios/{usuarioId}/historico'].get.security");
+        List<Map<String, Object>> segurancaPlay = JsonPath.read(especificacao,
+                "$.paths['/api/musicas/{id}/play'].post.security");
+        assertThat(segurancaHistorico.getFirst()).containsKey("bearerAuth");
+        assertThat(segurancaPlay.getFirst()).containsKey("bearerAuth");
+        mvc.perform(get("/swagger-ui.html")).andExpect(status().is3xxRedirection());
+        mvc.perform(get("/swagger-ui/index.html")).andExpect(status().isOk());
     }
 
     private String login(String email, String senha) throws Exception {
