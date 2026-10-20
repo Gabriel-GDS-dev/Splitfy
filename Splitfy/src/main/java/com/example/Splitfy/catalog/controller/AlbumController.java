@@ -1,5 +1,6 @@
 package com.example.Splitfy.catalog.controller;
 
+import com.example.Splitfy.catalog.doc.AlbumControllerDoc;
 import com.example.Splitfy.catalog.dto.AlbumRequest;
 import com.example.Splitfy.catalog.dto.AlbumResponse;
 import com.example.Splitfy.catalog.dto.MusicaResponse;
@@ -28,7 +29,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/albuns")
-public class AlbumController {
+public class AlbumController implements AlbumControllerDoc {
 
     private final AlbumService albumService;
     private final MusicaService musicaService;

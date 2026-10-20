@@ -1,5 +1,6 @@
 package com.example.Splitfy.catalog.controller;
 
+import com.example.Splitfy.catalog.doc.ArtistaControllerDoc;
 import com.example.Splitfy.catalog.dto.AlbumResponse;
 import com.example.Splitfy.catalog.dto.ArtistaRequest;
 import com.example.Splitfy.catalog.dto.ArtistaResponse;
@@ -27,7 +28,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/api/artistas")
-public class ArtistaController {
+public class ArtistaController implements ArtistaControllerDoc {
 
     private final ArtistaService artistaService;
     private final AlbumService albumService;
