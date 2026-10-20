@@ -1,10 +1,9 @@
 ### Catálogo - Artista e Álbum
-# O Spring Security ainda não tem configuração no projeto: toda rota exige Basic Auth
-# com o usuário "user" e a senha impressa no log ao subir a aplicação
-# ("Using generated security password: ..."). Cole a senha em @senha abaixo.
+# Toda rota exige Basic Auth com o usuário "user" e a senha "splitfy"
+# (definidos em application-local.properties; rode com o perfil "local"). Swagger UI: http://localhost:8080/swagger-ui.html
 
 @baseUrl = http://localhost:8080/api
-@senha = cole-aqui-a-senha-gerada
+@senha = splitfy
 
 ############################################################
 # ARTISTAS
