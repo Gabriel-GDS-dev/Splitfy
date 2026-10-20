@@ -5,6 +5,7 @@ import com.example.Splitfy.catalog.dto.UsuarioResponse;
 import com.example.Splitfy.catalog.entity.Usuario;
 import com.example.Splitfy.catalog.exception.UsuarioNotFoundException;
 import com.example.Splitfy.catalog.exception.UsuarioValidationException;
+import com.example.Splitfy.catalog.exception.RegraDeNegocioException;
 import com.example.Splitfy.catalog.repository.UsuarioRepository;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -70,6 +71,9 @@ public class UsuarioService {
     public UsuarioResponse atualizar(Long id, UsuarioRequest request) {
         Usuario usuario = buscarEntidade(id);
         validar(request, id, false);
+        if (usuario.isAtivo() && "ADMIN".equals(usuario.getRole()) && !"ADMIN".equals(normalizarRole(request.role()))) {
+            validarOutroAdministrador();
+        }
 
         usuario.setNome(limparObrigatorio(request.nome()));
         usuario.setEmail(normalizarEmail(request.email()));
@@ -86,6 +90,7 @@ public class UsuarioService {
     @Transactional
     public void desativar(Long id) {
         Usuario usuario = buscarEntidade(id);
+        if (usuario.isAtivo() && "ADMIN".equals(usuario.getRole())) validarOutroAdministrador();
         usuario.setAtivo(false);
         usuarioRepository.save(usuario);
     }
@@ -100,6 +105,12 @@ public class UsuarioService {
     private Usuario buscarEntidade(Long id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new UsuarioNotFoundException("Usuario nao encontrado."));
+    }
+
+    private void validarOutroAdministrador() {
+        if (usuarioRepository.countByRoleAndAtivoTrue("ADMIN") <= 1) {
+            throw new RegraDeNegocioException("Mantenha pelo menos um administrador ativo. Promova outro usuário antes desta alteração.");
+        }
     }
 
     private void validar(UsuarioRequest request, Long id, boolean senhaObrigatoria) {

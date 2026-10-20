@@ -22,7 +22,7 @@ class SwaggerIntegracaoTest {
 
     @Test
     void documentacaoPublicaDescreveSomenteGenerosEMusicas() throws Exception {
-        for (String endpoint : new String[]{"/v3/api-docs", "/v3/api-docs/generos-e-musicas"}) {
+        for (String endpoint : new String[]{"/v3/api-docs/generos-e-musicas"}) {
             String json = mvc.perform(get(endpoint)).andExpect(status().isOk())
                     .andReturn().getResponse().getContentAsString();
             JsonNode doc = JsonMapper.builder().build().readTree(json);
@@ -50,6 +50,21 @@ class SwaggerIntegracaoTest {
             assertThat(paths.path("/api/generos/{id}").path("delete").path("responses").has("204")).isTrue();
             assertThat(paths.path("/api/musicas").path("get").path("parameters").size()).isEqualTo(3);
         }
+    }
+
+    @Test
+    void loginDisponivelNoGrupoDeSegurancaSemExigirToken() throws Exception {
+        String json = mvc.perform(get("/v3/api-docs/seguranca-historico"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        JsonNode doc = JsonMapper.builder().build().readTree(json);
+        JsonNode login = doc.path("paths").path("/api/auth/login").path("post");
+        assertThat(login.path("summary").asText()).isEqualTo("Entrar");
+        assertThat(login.path("security").size()).isZero();
+        assertThat(login.path("responses").has("200")).isTrue();
+        assertThat(login.path("responses").has("401")).isTrue();
+        mvc.perform(get("/api/generos").header("Authorization",
+                "Bearer http://localhost:8080/.well-known/oauth-protected-resource"))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test

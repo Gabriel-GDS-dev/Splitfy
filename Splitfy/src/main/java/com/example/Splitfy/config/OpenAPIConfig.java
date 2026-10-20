@@ -1,9 +1,6 @@
 package com.example.Splitfy.config;
 
-import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,22 +10,36 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:swagger.properties")
 public class OpenAPIConfig {
     @Bean
-    public OpenAPI apiInfo() {
-        return new OpenAPI()
-                .info(new Info().title("Splitfy - Gêneros e Músicas").version("v1")
-                        .description("Documentação da parte de Gabriel: gêneros e músicas. "
-                                + "Obtenha tokenAcesso em POST /api/auth/login com email e senha e cole "
-                                + "somente o token em Authorize. Consultas exigem USER ou ADMIN; "
-                                + "cadastro, edição e exclusão exigem ADMIN."))
-                .components(new Components().addSecuritySchemes("bearerAuth",
-                        new SecurityScheme().type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer").bearerFormat("JWT")));
+    public GroupedOpenApi gestaoSiteApi() {
+        return GroupedOpenApi.builder().group("gestao-do-site")
+                .pathsToMatch("/api/usuarios", "/api/usuarios/*", "/api/usuarios/*/ativar",
+                        "/api/usuarios/*/perfil", "/api/usuarios/*/playlists",
+                        "/api/artistas", "/api/artistas/**", "/api/albuns", "/api/albuns/**",
+                        "/api/playlists", "/api/playlists/**", "/api/avaliacoes", "/api/avaliacoes/**")
+                .addOpenApiCustomizer(api -> {
+                    api.info(new Info().title("Splitfy - Gestão do site").version("v1")
+                            .description("Cadastros e edição do site. A gestão de usuários, papéis e catálogo exige ADMIN. "
+                                    + "PUT /api/usuarios/{id} permite alterar role entre USER e ADMIN. "
+                                    + "Cadastro público de conta cria USER."));
+                    api.addSecurityItem(new io.swagger.v3.oas.models.security.SecurityRequirement().addList("bearerAuth"));
+                    if (api.getPaths().get("/api/usuarios") != null
+                            && api.getPaths().get("/api/usuarios").getPost() != null) {
+                        api.getPaths().get("/api/usuarios").getPost().setSecurity(java.util.List.of(
+                                new io.swagger.v3.oas.models.security.SecurityRequirement(),
+                                new io.swagger.v3.oas.models.security.SecurityRequirement().addList("bearerAuth")));
+                    }
+                }).build();
     }
 
     @Bean
     public GroupedOpenApi generoMusicaApi() {
         return GroupedOpenApi.builder().group("generos-e-musicas")
                 .pathsToMatch("/api/generos", "/api/generos/**", "/api/musicas", "/api/musicas/**")
+                .addOpenApiCustomizer(api -> api.info(new Info()
+                        .title("Splitfy - Gêneros e Músicas").version("v1")
+                        .description("Para obter o token, selecione seguranca-historico e execute POST /api/auth/login. "
+                                + "Copie somente tokenAcesso e cole em Authorize, sem Bearer e sem URL. "
+                                + "Consultas exigem USER ou ADMIN; cadastro, edição e exclusão exigem ADMIN.")))
                 .build();
     }
 }

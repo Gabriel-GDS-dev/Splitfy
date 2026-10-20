@@ -243,9 +243,16 @@
                 <input id="login-email" name="email" type="email" autocomplete="username" required></div>
             <div class="form-field is-wide"><label for="login-password">Senha</label>
                 <input id="login-password" name="senha" type="password" autocomplete="current-password" required></div>
+            <div class="form-field is-wide" id="signup-name-field" hidden><label for="signup-name">Nome</label>
+                <input id="signup-name" name="nome" autocomplete="name"></div>
+            <div class="form-field is-wide" id="signup-birth-field" hidden><label for="signup-birth">Data de nascimento</label>
+                <input id="signup-birth" name="dataNascimento" type="date"></div>
         </div>
         <p class="form-feedback" id="login-feedback" role="status" aria-live="polite"></p>
-        <footer class="dialog-actions"><button class="primary-button" id="login-submit" type="submit">Entrar</button></footer>
+        <footer class="dialog-actions">
+            <button class="secondary-button" id="signup-toggle" type="button">Criar conta</button>
+            <button class="primary-button" id="login-submit" type="submit">Entrar</button>
+        </footer>
     </form>
 </dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>

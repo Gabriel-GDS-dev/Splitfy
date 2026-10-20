@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="341f37dc-b5a8-459a-909d-df3107da2828" name="Changes" comment="Funcionando Um Pouco">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Splitfy/src/main/java/com/example/Splitfy/config/OpenAPIConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Splitfy/src/main/java/com/example/Splitfy/config/OpenAPIConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Splitfy/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Splitfy/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Splitfy/src/main/resources/swagger.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Splitfy/src/main/resources/swagger.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Splitfy/src/test/java/com/example/Splitfy/config/SwaggerIntegracaoTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Splitfy/src/test/java/com/example/Splitfy/config/SwaggerIntegracaoTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Splitfy/src/test/java/com/example/Splitfy/seguranca/AutenticacaoIntegracaoTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Splitfy/src/test/java/com/example/Splitfy/seguranca/AutenticacaoIntegracaoTest.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution>
+      <executable />
+    </execution>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="origin/main" />
+  </component>
+  <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="gabri &lt;gabriel.gsouzza6@gmail.com&gt;" />
+      </list>
+    </option>
+    <option name="PUSH_AUTO_UPDATE" value="true" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="teste/karen-artista-album" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Gabriel-GDS-dev&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Gabriel-GDS-dev/Splitfy.git&quot;,
+    &quot;accountId&quot;: &quot;4121729b-06bd-451c-b2c1-04176a2fafd8&quot;
+  }
+}</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3JhZxw2BnBrnqfhXuWWtdKyK4dH" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.SplitfyApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Git.CreateWorkingTree.LastParentPath&quot;: &quot;C:/Users/gabri/OneDrive/Documentos&quot;,
+    &quot;HTTP Request.All in autenticacao.executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.index.html.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;Spring Boot.SplitfyApplication.executor&quot;: &quot;Run&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/gabri/OneDrive/Documentos/Splitfy&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.jshint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.jshint&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\gabri\OneDrive\Documentos\Splitfy\Splitfy\src\main\java\com\example\Splitfy\catalog\service" />
+      <recent name="C:\Users\gabri\OneDrive\Documentos\Splitfy\Splitfy\src\main\java\com\example\Splitfy\catalog\repository" />
+      <recent name="C:\Users\gabri\OneDrive\Documentos\Splitfy\Splitfy\src\main\java\com\example\Splitfy\catalog\exception" />
+      <recent name="C:\Users\gabri\OneDrive\Documentos\Splitfy\Splitfy\src\main\java\com\example\Splitfy\catalog\entity" />
+      <recent name="C:\Users\gabri\OneDrive\Documentos\Splitfy\Splitfy\src\main\java\com\example\Splitfy\catalog\dto" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="configurationStatuses">
+      <map>
+        <entry key="HttpClient.HttpRequestRunConfigurationType">
+          <value>
+            <map>
+              <entry key="All in autenticacao" value="STOPPED" />
+            </map>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="RunManager" selected="Application.SplitfyApplication">
+    <configuration name="SplitfyApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.example.Splitfy.SplitfyApplication" />
+      <module name="Splitfy" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.Splitfy.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="All in autenticacao" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" path="$PROJECT_DIR$/Splitfy/http/autenticacao.http">
+      <method v="2" />
+    </configuration>
+    <configuration name="SplitfyApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="Splitfy" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.Splitfy.SplitfyApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.SplitfyApplication" />
+        <item itemvalue="HTTP Request.All in autenticacao" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-34e2839f716b-intellij.indexing.shared.core-IU-262.9437.185" />
+        <option value="bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-IU-262.9437.185" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="341f37dc-b5a8-459a-909d-df3107da2828" name="Changes" comment="" />
+      <created>1790115510705</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1790115510705</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Splitfy com banco" />
+    <MESSAGE value="Crud de genero e música" />
+    <MESSAGE value="Crud's Feitos e Funcionais" />
+    <MESSAGE value="Frontend rodando na porta 63342, e Backend na porta 8080, link para o front no README.md" />
+    <MESSAGE value="Dependências adicionadas" />
+    <MESSAGE value="Funcionando Um Pouco" />
+    <option name="LAST_COMMIT_MESSAGE" value="Funcionando Um Pouco" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

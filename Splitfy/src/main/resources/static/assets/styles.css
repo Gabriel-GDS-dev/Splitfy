@@ -246,7 +246,7 @@ svg {
     top: 0;
     z-index: 20;
     display: grid;
-    grid-template-columns: minmax(260px, 620px) minmax(190px, 250px) auto;
+    grid-template-columns: minmax(180px, 1fr) minmax(170px, 240px) auto auto;
     gap: 14px;
     align-items: center;
     min-height: 74px;

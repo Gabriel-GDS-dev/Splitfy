@@ -20,7 +20,8 @@ function harness(saved, response) {
     const storage = new Map(saved ? [["splitfy.session", JSON.stringify(saved)]] : []);
     const calls = [];
     const form = node("#login-form");
-    form.elements = { email: { value: "teste@example.test" }, senha: { value: "senha-de-teste" } };
+    form.elements = { email: { value: "teste@example.test" }, senha: { value: "senha-de-teste" },
+        nome: { value: "Teste" }, dataNascimento: { value: "2000-01-01" } };
     const context = {
         document: { querySelector: node },
         window: { dispatchEvent() {} },
@@ -66,6 +67,17 @@ test("restaura sessão e retorna ao login ao expirar", () => {
     h.context.expiry();
     assert.equal(h.auth.getSession(), null);
     assert.equal(h.node("#login-dialog").open, true);
+});
+
+test("cadastro público cria conta sem solicitar permissão ADMIN e depois faz login", async () => {
+    const h = harness(null, { ok: true, json: async () => ({ tokenAcesso: token() }) });
+    h.node("#signup-toggle").listeners.click();
+    assert.equal(h.node("#signup-name-field").hidden, false);
+    await h.submit();
+    assert.equal(h.calls[0][0], "/api/usuarios");
+    assert.equal(h.calls[1][0], "/api/auth/login");
+    assert.equal(Object.hasOwn(JSON.parse(h.calls[0][1].body), "role"), false);
+    assert.equal(h.auth.getSession().role, "USER");
 });
 
 function apiHarness(session, status = 200) {

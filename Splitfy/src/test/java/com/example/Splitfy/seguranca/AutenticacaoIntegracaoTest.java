@@ -95,14 +95,16 @@ class AutenticacaoIntegracaoTest {
         String configuracao = mvc.perform(get("/v3/api-docs/swagger-config"))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        String caminhoGrupo = JsonPath.read(configuracao, "$.urls[0].url");
+        List<String> grupos = JsonPath.read(configuracao, "$.urls[*].url");
+        String caminhoGrupo = "/v3/api-docs/seguranca-historico";
+        assertThat(grupos).contains(caminhoGrupo);
         String especificacao = mvc.perform(get(caminhoGrupo))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
         Map<String, Object> caminhos = JsonPath.read(especificacao, "$.paths");
         assertThat(caminhos.keySet()).containsExactlyInAnyOrder(
-                "/api/auth/login", "/api/usuarios/{usuarioId}/historico", "/api/musicas/{id}/play");
+                "/api/auth/login", "/api/auth/me", "/api/usuarios/{usuarioId}/historico", "/api/musicas/{id}/play");
         Map<String, Object> login = JsonPath.read(especificacao, "$.paths['/api/auth/login'].post");
         assertThat(login).doesNotContainKey("security");
         List<Map<String, Object>> segurancaHistorico = JsonPath.read(especificacao,

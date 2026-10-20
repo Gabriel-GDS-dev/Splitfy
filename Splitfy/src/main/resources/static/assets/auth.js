@@ -7,6 +7,21 @@
     const button = document.querySelector("#session-button");
     let session = null;
     let expiryTimer;
+    let registering = false;
+
+    function setRegistration(value) {
+        registering = value;
+        document.querySelector("#signup-name-field").hidden = !value;
+        document.querySelector("#signup-birth-field").hidden = !value;
+        form.elements.nome.required = value;
+        form.elements.dataNascimento.required = value;
+        form.elements.senha.minLength = value ? 6 : 1;
+        form.elements.senha.autocomplete = value ? "new-password" : "current-password";
+        document.querySelector("#login-title").textContent = value ? "Criar conta no Splitfy" : "Entrar no Splitfy";
+        document.querySelector("#login-submit").textContent = value ? "Cadastrar e entrar" : "Entrar";
+        document.querySelector("#signup-toggle").textContent = value ? "Já tenho conta" : "Criar conta";
+        feedback.textContent = "";
+    }
 
     function decode(token) {
         const part = token.split(".")[1].replaceAll("-", "+").replaceAll("_", "/");
@@ -71,12 +86,26 @@
         open();
     });
     document.querySelector("#login-close").addEventListener("click", () => dialog.close());
+    document.querySelector("#signup-toggle").addEventListener("click", () => setRegistration(!registering));
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
         const submit = document.querySelector("#login-submit");
         submit.disabled = true;
         feedback.textContent = "Entrando…";
         try {
+            if (registering) {
+                const cadastro = await fetch("/api/usuarios", {
+                    method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
+                    body: JSON.stringify({ nome: form.elements.nome.value.trim(),
+                        email: form.elements.email.value.trim(), senha: form.elements.senha.value,
+                        dataNascimento: form.elements.dataNascimento.value })
+                });
+                if (!cadastro.ok) {
+                    const erro = await cadastro.json().catch(() => ({}));
+                    throw new Error(Object.values(erro.fields || {}).join(" ") || erro.message || "Não foi possível criar sua conta.");
+                }
+                setRegistration(false);
+            }
             const response = await fetch("/api/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Accept: "application/json" },

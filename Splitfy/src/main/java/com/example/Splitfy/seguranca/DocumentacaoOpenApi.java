@@ -24,7 +24,7 @@ public class DocumentacaoOpenApi {
     GroupedOpenApi documentacaoSegurancaHistorico() {
         return GroupedOpenApi.builder()
                 .group("seguranca-historico")
-                .pathsToMatch("/api/auth/login", "/api/usuarios/*/historico", "/api/musicas/*/play")
+                .pathsToMatch("/api/auth/login", "/api/auth/me", "/api/usuarios/*/historico", "/api/musicas/*/play")
                 .build();
     }
 }

@@ -279,14 +279,13 @@
         }
         if (!quiet) setConnection(null, "Sincronizando");
         try {
+            const currentUser = await request("/api/auth/me");
             const [artists, albums, genres, songs, users, playlists] = await Promise.all([
                 request("/api/artistas?size=200"),
                 request("/api/albuns?size=200"),
                 request("/api/generos"),
                 request("/api/musicas"),
-                session.role === "ADMIN" ? request("/api/usuarios") : Promise.resolve([{
-                    id: session.userId, nome: session.email, email: session.email, ativo: true, role: session.role
-                }]),
+                session.role === "ADMIN" ? request("/api/usuarios") : Promise.resolve([currentUser]),
                 request("/api/playlists")
             ]);
 
@@ -618,7 +617,7 @@
             return matchesSearch(user.nome, user.email, user.role, profile?.nomeExibicao);
         });
         elements.usersCount.textContent = `${users.length} ${users.length === 1 ? "usuário" : "usuários"}`;
-        const header = `<div class="table-row table-head users-row"><span>Usuário</span><span class="user-email">E-mail</span><span>Perfil</span><span class="user-birth">Nascimento</span><span>Status</span><span>Ações</span></div>`;
+        const header = `<div class="table-row table-head users-row"><span>Usuário</span><span class="user-email">E-mail</span><span>Permissão</span><span class="user-birth">Nascimento</span><span>Status</span><span>Ações</span></div>`;
         elements.usersTable.innerHTML = users.length ? header + users.map((user) => {
             const profile = state.profiles.get(user.id);
             return `
@@ -844,6 +843,13 @@
             } else if (kind === "usuario") {
                 const body = { nome: data.get("nome"), email: data.get("email"), senha: data.get("senha") || null, dataNascimento: data.get("dataNascimento"), role: data.get("role") };
                 await request(`/api/usuarios${item ? `/${item.id}` : ""}`, { method: item ? "PUT" : "POST", body });
+                if (item?.id === window.splitfyAuth.getSession()?.userId
+                        && item.role !== body.role) {
+                    elements.editorDialog.close();
+                    window.splitfyAuth.expire();
+                    showToast("Permissão alterada. Entre novamente para atualizar seu acesso.");
+                    return;
+                }
             } else if (kind === "perfil") {
                 const body = { nomeExibicao: data.get("nomeExibicao"), fotoUrl: data.get("fotoUrl") || null, bio: data.get("bio") || null };
                 await request(`/api/usuarios/${context.userId}/perfil`, { method: item ? "PUT" : "POST", body });
