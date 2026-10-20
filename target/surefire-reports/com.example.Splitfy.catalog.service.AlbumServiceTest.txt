@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.example.Splitfy.catalog.service.AlbumServiceTest
+-------------------------------------------------------------------------------
+Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.959 s -- in com.example.Splitfy.catalog.service.AlbumServiceTest
