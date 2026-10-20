@@ -39,6 +39,7 @@ public class ConfiguracaoSeguranca {
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**", "/v3/api-docs.yaml").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/usuarios").permitAll()
                         .requestMatchers("/", "/index.html", "/assets/**", "/error").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/usuarios", "/api/usuarios/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/usuarios/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/usuarios/*").hasRole("ADMIN")

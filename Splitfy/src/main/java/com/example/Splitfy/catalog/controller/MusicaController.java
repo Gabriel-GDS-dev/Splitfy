@@ -6,6 +6,11 @@ import com.example.Splitfy.catalog.dto.MusicaRequest;
 import com.example.Splitfy.catalog.dto.MusicaResponse;
 import com.example.Splitfy.catalog.service.MusicaService;
 import com.example.Splitfy.historico.dto.RegistrarReproducaoRequisicao;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +71,17 @@ public class MusicaController implements MusicaControllerDoc {
 
     @PostMapping("/{id}/play")
     @PreAuthorize("#p1 != null and #p1.usuarioId() != null and (hasRole('ADMIN') or #p1.usuarioId().toString() == authentication.name)")
+    @Tag(name = "Histórico de reprodução")
+    @Operation(summary = "Registrar play simulado",
+            description = "Registra uma reprodução para o usuário do token (ou para outro usuário se ADMIN) e incrementa o contador da música.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Reprodução registrada"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+            @ApiResponse(responseCode = "401", description = "Token ausente ou inválido"),
+            @ApiResponse(responseCode = "403", description = "Usuário sem permissão"),
+            @ApiResponse(responseCode = "404", description = "Usuário ou música não encontrado")
+    })
     public MusicaResponse registrarPlay(@PathVariable Long id, @RequestBody RegistrarReproducaoRequisicao requisicao) {
         return musicaService.registrarPlay(id, requisicao.usuarioId());
     }
