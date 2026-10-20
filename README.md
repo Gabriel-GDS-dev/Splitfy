@@ -30,6 +30,12 @@ Os testes de autenticação da interface podem ser executados com Node.js: `node
 
 ## Responsabilidades e estado atual
 
+### Testar pelo Swagger
+
+Abra [Swagger UI](http://localhost:8080/swagger-ui/index.html). A opção `splitfy-completo` reúne todas as APIs, incluindo gêneros e músicas; os grupos individuais continuam disponíveis.
+Em qualquer grupo, execute `POST /api/auth/login` com seu e-mail e senha. Copie o campo `tokenAcesso`, clique em **Authorize** e cole somente o token, sem `Bearer` e sem URL. A autorização é mantida ao trocar de grupo e recarregar a página; após expirar, faça login novamente.
+Uma resposta **401** indica token ausente, inválido ou expirado. **403** indica falta de permissão: consultar usuários e alterar o catálogo exige ADMIN. Informe IDs existentes no banco; `0` no exemplo não representa um registro cadastrado.
+
 Cada integrante mantém sua seção abaixo. **"Banco disponível"** significa que a tabela já tem migration; **"API disponível"** significa que há código Java para atender requisições nesta branch. A presença da tabela, por si só, não indica que o CRUD esteja implementado.
 
 ### Luis Gabriel — segurança e histórico de reprodução

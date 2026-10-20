@@ -21,6 +21,27 @@ class SwaggerIntegracaoTest {
     @Autowired MockMvc mvc;
 
     @Test
+    void todosOsGruposIncluemLoginETodasAsApisEstaoIntegradas() throws Exception {
+        for (String grupo : new String[]{"gestao-do-site", "generos-e-musicas", "seguranca-historico", "splitfy-completo"}) {
+            String json = mvc.perform(get("/v3/api-docs/" + grupo)).andExpect(status().isOk())
+                    .andReturn().getResponse().getContentAsString();
+            JsonNode doc = JsonMapper.builder().build().readTree(json);
+            assertThat(doc.path("paths").has("/api/auth/login")).isTrue();
+            assertThat(doc.path("paths").path("/api/auth/login").path("post").path("security").size()).isZero();
+            if (grupo.equals("splitfy-completo")) {
+                assertThat(doc.path("paths").propertyNames()).contains(
+                        "/api/generos", "/api/musicas", "/api/usuarios", "/api/playlists", "/api/albuns", "/api/artistas");
+            }
+            if (grupo.equals("gestao-do-site")) {
+                JsonNode consulta = doc.path("paths").path("/api/usuarios/{id}").path("get");
+                assertThat(consulta.at("/security/0/bearerAuth").isArray()).isTrue();
+                assertThat(consulta.path("responses").has("401")).isTrue();
+                assertThat(consulta.path("responses").has("403")).isTrue();
+            }
+        }
+    }
+
+    @Test
     void documentacaoPublicaDescreveSomenteGenerosEMusicas() throws Exception {
         for (String endpoint : new String[]{"/v3/api-docs/generos-e-musicas"}) {
             String json = mvc.perform(get(endpoint)).andExpect(status().isOk())
@@ -28,13 +49,17 @@ class SwaggerIntegracaoTest {
             JsonNode doc = JsonMapper.builder().build().readTree(json);
             assertThat(doc.path("paths").propertyNames()).containsExactlyInAnyOrder(
                     "/api/generos", "/api/generos/{id}", "/api/generos/{id}/musicas",
-                    "/api/musicas", "/api/musicas/{id}", "/api/musicas/{id}/play");
+                    "/api/musicas", "/api/musicas/{id}", "/api/musicas/{id}/play", "/api/auth/login");
             assertThat(doc.at("/components/securitySchemes/bearerAuth/scheme").asText()).isEqualTo("bearer");
             JsonNode paths = doc.path("paths");
             int operacoes = 0;
             for (JsonNode path : paths) {
                 for (JsonNode operation : path) {
                     assertThat(operation.path("summary").asText()).isNotBlank();
+                    if (operation.path("operationId").asText().equals("login")) {
+                        assertThat(operation.path("security").size()).isZero();
+                        continue;
+                    }
                     assertThat(operation.at("/security/0/bearerAuth").isArray()).isTrue();
                     assertThat(operation.path("responses").has("401")).isTrue();
                     assertThat(operation.path("responses").has("403")).isTrue();
