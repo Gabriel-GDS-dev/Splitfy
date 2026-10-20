@@ -1,5 +1,7 @@
 package com.example.Splitfy.catalog.controller;
 
+import com.example.Splitfy.catalog.doc.GeneroControllerDoc;
+
 import com.example.Splitfy.catalog.dto.GeneroRequest;
 import com.example.Splitfy.catalog.dto.GeneroResponse;
 import com.example.Splitfy.catalog.dto.MusicaResponse;
@@ -23,7 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/generos")
-public class GeneroController {
+public class GeneroController implements GeneroControllerDoc {
 
     private final GeneroService generoService;
     private final MusicaService musicaService;

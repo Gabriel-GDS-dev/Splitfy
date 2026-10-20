@@ -8,6 +8,7 @@
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="./assets/styles.css">
     <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script defer src="./assets/auth.js"></script>
     <script defer src="./assets/app.js"></script>
 </head>
 <body>
@@ -53,6 +54,7 @@
                 <label for="active-user">Usuário ativo</label>
                 <select id="active-user" aria-label="Selecionar usuário ativo"><option value="">Selecionar</option></select>
             </div>
+            <button class="secondary-button" id="session-button" type="button">Entrar</button>
             <button class="primary-button" id="context-create" type="button"><i data-lucide="plus"></i><span>Novo</span></button>
         </header>
 
@@ -229,6 +231,23 @@
     </div>
 </dialog>
 
+<dialog class="editor-dialog" id="login-dialog" aria-labelledby="login-title">
+    <form class="dialog-shell" id="login-form">
+        <header class="dialog-header">
+            <div><span class="eyebrow">Sua biblioteca</span><h2 id="login-title">Entrar no Splitfy</h2></div>
+            <button class="icon-button" id="login-close" type="button" aria-label="Fechar login">×</button>
+        </header>
+        <div class="dialog-body">
+            <p class="form-field is-wide">Use o e-mail e a senha de um usuário já cadastrado.</p>
+            <div class="form-field is-wide"><label for="login-email">E-mail</label>
+                <input id="login-email" name="email" type="email" autocomplete="username" required></div>
+            <div class="form-field is-wide"><label for="login-password">Senha</label>
+                <input id="login-password" name="senha" type="password" autocomplete="current-password" required></div>
+        </div>
+        <p class="form-feedback" id="login-feedback" role="status" aria-live="polite"></p>
+        <footer class="dialog-actions"><button class="primary-button" id="login-submit" type="submit">Entrar</button></footer>
+    </form>
+</dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

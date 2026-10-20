@@ -36,6 +36,7 @@ public class ConfiguracaoSeguranca {
                 .formLogin(formulario -> formulario.disable())
                 .authorizeHttpRequests(rotas -> rotas
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**", "/v3/api-docs.yaml").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/usuarios").permitAll()
                         .requestMatchers("/", "/index.html", "/assets/**", "/error").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/usuarios", "/api/usuarios/*").hasRole("ADMIN")
@@ -57,7 +58,7 @@ public class ConfiguracaoSeguranca {
     }
 
     @Bean
-    SecretKey chaveJwt(@Value("${splitfy.jwt.secret}") String segredo) {
+    SecretKey chaveJwt(@Value("${splitfy.jwt.secret:minha_chave_secreta_padrao_para_desenvolvimento_123456789}") String segredo) {
         byte[] bytes = segredo.getBytes(StandardCharsets.UTF_8);
         if (bytes.length < 32) {
             throw new IllegalArgumentException("SPLITFY_JWT_SECRET deve ter pelo menos 32 bytes.");

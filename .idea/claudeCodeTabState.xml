@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ClaudeCodeTabState">
+    <option name="tabSessions">
+      <map>
+        <entry key="0">
+          <value>
+            <TabSessionState>
+              <option name="projectPath" value="C:\Users\gabri\OneDrive\Documentos\Splitfy" />
+              <option name="provider" value="claude" />
+              <option name="sessionId" value="d7a5c11d-a64b-4159-9130-cbbdeb400ecd" />
+              <option name="cwd" value="C:\Users\gabri\OneDrive\Documentos\Splitfy" />
+              <option name="model" value="claude-sonnet-5-5[1m]" />
+              <option name="permissionMode" value="bypassPermissions" />
+            </TabSessionState>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

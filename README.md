@@ -24,11 +24,9 @@ Requisitos: Java 21 ou superior e PostgreSQL. O projeto inclui o Maven Wrapper, 
 
 O Flyway aplica as migrations de [`db/migration`](Splitfy/src/main/resources/db/migration/) na inicialização. A API fica em `http://localhost:8080/api`. Para rodar o teste existente, use `.\mvnw.cmd test` na mesma pasta; esse teste usa H2 e não substitui uma validação com PostgreSQL.
 
-Obs: Frontend rodando em:
+Abra o frontend em [http://localhost:8080/](http://localhost:8080/), com a aplicação em execução. Clique em **Entrar** e informe o e-mail e a senha de um usuário existente. A sessão fica nesta aba; sair ou expirar o token exige novo login. USER acessa a biblioteca e seu histórico; a administração de usuários e alterações do catálogo exigem ADMIN.
 
-```powershell
-   http://localhost:63342/Splitfy/static/index.html
-   ```
+Os testes de autenticação da interface podem ser executados com Node.js: `node --test src/test/frontend/auth.test.cjs`, dentro de `Splitfy/`.
 
 ## Responsabilidades e estado atual
 
@@ -42,7 +40,7 @@ Cada integrante mantém sua seção abaixo. **"Banco disponível"** significa qu
 - **Validação:** exemplos em [`historico-reproducao.http`](Splitfy/http/historico-reproducao.http). O histórico, o contador e o desfazimento conjunto em caso de falha foram verificados em PostgreSQL 17.4 temporário.
 - **Segurança:** `POST /api/auth/login` recebe `{"email":"usuario@exemplo.com","senha":"suaSenha"}` e devolve `tokenAcesso`, `tipo` (`Bearer`) e `expiraEmSegundos` (3600). Envie `Authorization: Bearer <tokenAcesso>` nas demais chamadas da API. O token é assinado com `SPLITFY_JWT_SECRET`; não há refresh token.
 - **Senhas e papéis:** novos cadastros e alterações de senha usam BCrypt. Senhas antigas em texto puro são convertidas para BCrypt no primeiro login correto. `POST /api/usuarios` permanece público para cadastrar usuários USER; somente um ADMIN autenticado pode atribuir ADMIN. Para preparar o primeiro administrador em um banco novo, cadastre um usuário e promova-o diretamente no banco com `UPDATE usuario SET role = 'ADMIN' WHERE email = 'usuario@exemplo.com';`, depois faça login novamente.
-- **Autorização:** listar, consultar, atualizar e ativar/desativar usuários, além de alterar o catálogo, exige ADMIN. Histórico e play aceitam o próprio usuário ou ADMIN. Os demais endpoints da API exigem um token válido. Alterações de role ou desativação passam a valer para tokens já emitidos quando eles expirarem. O frontend de referência ainda não envia o token; valide a API pelas requisições HTTP.
+- **Autorização:** listar, consultar, atualizar e ativar/desativar usuários, além de alterar o catálogo, exige ADMIN. Histórico e play aceitam o próprio usuário ou ADMIN. Os demais endpoints da API exigem um token válido. Alterações de role ou desativação passam a valer para tokens já emitidos quando eles expirarem. O frontend envia o token obtido no login, trata a expiração da sessão e evita consultas administrativas para contas USER.
 - **Validação:** exemplos em [`autenticacao.http`](Splitfy/http/autenticacao.http) e [`historico-reproducao.http`](Splitfy/http/historico-reproducao.http).
 
 ### Gabriel — gênero e música
@@ -50,7 +48,11 @@ Cada integrante mantém sua seção abaixo. **"Banco disponível"** significa qu
 - **Banco disponível:** migrations `V5__create_genero.sql` e `V6__create_musica.sql`.
 - **API disponível nesta branch:** cadastro, consulta, atualização e exclusão de gêneros em `/api/generos` e de músicas em `/api/musicas`. A música possui busca por título, gênero e álbum. O play simulado fica em `/api/musicas/{id}/play` e recebe a integração com o histórico descrita na seção de Luis Gabriel.
 - **Integração:** cadastrar uma música exige um álbum e um gênero existentes. A API valida essas referências antes de salvar.
-- **Para ampliar:** incluir exemplos de requisições e validações do catálogo quando esse trabalho for documentado.
+- **Swagger:** com `SplitfyApplication` em execução, abra [Swagger UI](http://localhost:8080/swagger-ui.html). A documentação está limitada a gênero e música, incluindo filtros, exemplos JSON, respostas e registro de reprodução. As interfaces `GeneroControllerDoc` e `MusicaControllerDoc` seguem o padrão do exemplo fornecido; o springdoc 3.1.1 é compatível com Spring Boot 4.
+- **Execução local no IntelliJ:** `application.properties` importa opcionalmente `application-local.properties`. Esse arquivo fica fora do Git e pode definir `splitfy.jwt.secret` com uma chave aleatória de pelo menos 32 bytes. A variável `SPLITFY_JWT_SECRET`, quando informada, tem prioridade na configuração local. Em outra máquina, configure a variável conforme as instruções acima ou crie seu próprio arquivo local; não publique a chave.
+- **Autenticação no Swagger:** faça `POST /api/auth/login` com `email` e `senha` pelo cliente HTTP e copie `tokenAcesso`. Em **Authorize**, cole somente o token, sem o prefixo `Bearer`. Consultas exigem USER ou ADMIN; cadastro, edição e exclusão exigem ADMIN. Em `/play`, USER informa seu próprio `usuarioId`; ADMIN pode informar outro usuário.
+- **OpenAPI:** JSON em `/v3/api-docs/generos-e-musicas` (também disponível em `/v3/api-docs`). A interface e a documentação são públicas; os endpoints da API mantêm a autorização existente.
+- **Validação:** `SwaggerIntegracaoTest` verifica as 12 operações, contratos, autenticação Bearer, abertura pública do Swagger e proteção da API. Execute `mvnw.cmd test` dentro da pasta `Splitfy`.
 
 ### Karen — artista e álbum
 

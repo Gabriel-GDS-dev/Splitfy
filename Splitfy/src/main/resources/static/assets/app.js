@@ -2,7 +2,7 @@
     "use strict";
 
     // Altere para a porta/URL onde o seu servidor backend Spring Boot está executando
-    const API_BASE_URL = "http://localhost:8080";
+    const API_BASE_URL = "";
 
     const validRoutes = new Set([
         "inicio", "musicas", "artistas", "albuns", "generos",
@@ -157,12 +157,25 @@
         const targetUrl = `${API_BASE_URL}${fullPath}`;
 
         const options = { method, headers: { Accept: "application/json" } };
+        const session = window.splitfyAuth.getSession();
+        if (!session) throw new Error("Entre na sua conta para acessar a biblioteca.");
+        options.headers.Authorization = `Bearer ${session.token}`;
         if (body !== undefined) {
             options.headers["Content-Type"] = "application/json";
             options.body = JSON.stringify(body);
         }
 
         const response = await fetch(targetUrl, options);
+        if (window.splitfyAuth.getSession()?.token !== session.token) {
+            throw new Error("A sessão foi encerrada.");
+        }
+        if (response.status === 401) {
+            window.splitfyAuth.expire();
+            throw new Error("Sua sessão expirou. Entre novamente.");
+        }
+        if (response.status === 403) {
+            throw new Error("Sua conta não tem permissão para esta ação.");
+        }
         const raw = await response.text();
         let data = null;
         if (raw) {
@@ -258,6 +271,12 @@
     }
 
     async function loadAll({ quiet = false } = {}) {
+        const session = window.splitfyAuth.getSession();
+        if (!session) {
+            setConnection(null, "Entre na sua conta");
+            renderAll();
+            return;
+        }
         if (!quiet) setConnection(null, "Sincronizando");
         try {
             const [artists, albums, genres, songs, users, playlists] = await Promise.all([
@@ -265,10 +284,13 @@
                 request("/api/albuns?size=200"),
                 request("/api/generos"),
                 request("/api/musicas"),
-                request("/api/usuarios"),
+                session.role === "ADMIN" ? request("/api/usuarios") : Promise.resolve([{
+                    id: session.userId, nome: session.email, email: session.email, ativo: true, role: session.role
+                }]),
                 request("/api/playlists")
             ]);
 
+            if (window.splitfyAuth.getSession()?.token !== session.token) return;
             state.artists = unwrapList(artists);
             state.albums = unwrapList(albums);
             state.genres = unwrapList(genres);
@@ -276,6 +298,7 @@
             state.users = unwrapList(users);
             state.playlists = unwrapList(playlists);
 
+            if (session.role !== "ADMIN") state.activeUserId = session.userId;
             const activeUser = state.users.find((user) => user.id === state.activeUserId && user.ativo);
             if (!activeUser) state.activeUserId = state.users.find((user) => user.ativo)?.id ?? null;
             if (state.activeUserId) localStorage.setItem("splitfy.activeUser", String(state.activeUserId));
@@ -297,6 +320,7 @@
             setConnection("online", "API conectada");
             renderAll();
         } catch (error) {
+            if (window.splitfyAuth.getSession()?.token !== session.token) return;
             setConnection("offline", "API indisponível");
             renderAll();
             showToast(error.message || "Não foi possível conectar à API.");
@@ -304,6 +328,7 @@
     }
 
     function renderUserSwitcher() {
+        elements.activeUser.disabled = window.splitfyAuth.getSession()?.role !== "ADMIN";
         const options = state.users.map((user) =>
             `<option value="${user.id}" ${user.id === state.activeUserId ? "selected" : ""} ${!user.ativo ? "disabled" : ""}>${escapeHtml(user.nome)}${user.ativo ? "" : " (inativo)"}</option>`
         ).join("");
@@ -324,6 +349,9 @@
     }
 
     function actionButton(icon, title, action, id, className = "") {
+        if (/^(edit|delete)-(song|artist|album|genre|user)$/.test(action) || action === "toggle-user") {
+            if (window.splitfyAuth.getSession()?.role !== "ADMIN") return "";
+        }
         return `<button class="table-action ${className}" type="button" title="${escapeHtml(title)}" data-action="${action}" data-id="${id}"><i data-lucide="${icon}"></i></button>`;
     }
 
@@ -643,6 +671,9 @@
 
     function setView(route, { updateHash = true } = {}) {
         if (!validRoutes.has(route)) route = "inicio";
+        const session = window.splitfyAuth.getSession();
+        const admin = session?.role === "ADMIN";
+        if (route === "usuarios" && !admin) route = "inicio";
         state.route = route;
         document.querySelectorAll("[data-view]").forEach((view) => {
             const active = view.dataset.view === route;
@@ -669,6 +700,12 @@
             elements.contextCreate.dataset.create = action[0];
             elements.contextCreate.querySelector("span").textContent = action[1];
         }
+        document.querySelectorAll('.nav-item[data-route="usuarios"]').forEach((item) => { item.hidden = !admin; });
+        const restricted = new Set(["musica", "artista", "album", "genero", "usuario"]);
+        document.querySelectorAll("[data-create], [data-quick-action]").forEach((item) => {
+            const kind = item.dataset.create || item.dataset.quickAction;
+            if (restricted.has(kind)) item.hidden = !admin;
+        });
         document.title = route === "inicio" ? "Splitfy" : `${route[0].toUpperCase()}${route.slice(1)} · Splitfy`;
     }
 
@@ -693,6 +730,11 @@
     }
 
     function openEditor(kind, item = null, context = {}) {
+        const session = window.splitfyAuth.getSession();
+        if (!session) return window.splitfyAuth.open();
+        if (["artista", "album", "genero", "musica", "usuario"].includes(kind) && session.role !== "ADMIN") {
+            return showToast("Somente administradores podem alterar o catálogo e os usuários.");
+        }
         const isEdit = Boolean(item);
         const activeUser = state.activeUserId || state.users.find((user) => user.ativo)?.id;
         let title = "Novo item";
@@ -1049,8 +1091,34 @@
         }, 1000);
     }
 
+    window.addEventListener("splitfy:session", () => {
+        state.artists = [];
+        state.albums = [];
+        state.genres = [];
+        state.songs = [];
+        state.users = [];
+        state.playlists = [];
+        state.reviews = [];
+        state.history = [];
+        state.profiles.clear();
+        state.playlistTracks.clear();
+        state.selectedPlaylistId = null;
+        state.activeUserId = window.splitfyAuth.getSession()?.userId || null;
+        localStorage.removeItem("splitfy.activeUser");
+        state.currentSongId = null;
+        state.isPlaying = false;
+        state.progressSeconds = 0;
+        elements.editorDialog.close();
+        elements.confirmDialog.close();
+        state.editor = null;
+        state.confirmAction = null;
+        renderAll();
+        renderPlayer();
+        loadAll();
+    });
     bindEvents();
     setView(state.route, { updateHash: false });
     refreshIcons();
     loadAll();
+    if (!window.splitfyAuth.getSession()) window.splitfyAuth.open();
 })();

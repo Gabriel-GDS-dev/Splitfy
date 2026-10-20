@@ -10,10 +10,10 @@ POST {{endereco}}/api/usuarios
 Content-Type: application/json
 
 {
-  "nome": "username",
-  "email": "user@email",
-  "senha": "senhaDeExemplo123",
-  "dataNascimento": "2000-01-01"
+  "nome": "admin",
+  "email": "admin@gmail.com",
+  "senha": "Admin12309",
+  "dataNascimento": "2004-09-01"
 }
 
 ### Fazer login — HTTP 200
@@ -21,8 +21,8 @@ POST {{endereco}}/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "user@email",
-  "senha": "senhaDeExemplo123"
+  "email": "admin@gmail.com",
+  "senha": "Admin12309"
 }
 
 ### Consultar recurso protegido — HTTP 200 com token válido
