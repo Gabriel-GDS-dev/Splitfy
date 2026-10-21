@@ -1,0 +1,6 @@
+.git
+.idea
+.env*
+**/target
+**/application-local.properties
+--template

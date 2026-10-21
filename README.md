@@ -6,6 +6,9 @@ Este README descreve a versão integrada dos módulos da equipe. O Documento de 
 
 ## Como executar
 
+Para publicar a aplicação completa na Vercel com Prisma Postgres, consulte
+[`docs/vercel.md`](docs/vercel.md).
+
 Requisitos: Java 21 ou superior e PostgreSQL. O projeto inclui o Maven Wrapper, então não é necessário instalar o Maven separadamente.
 
 1. Tenha um banco PostgreSQL chamado `Splitfy`, ou ajuste a URL de conexão para o nome do seu banco.

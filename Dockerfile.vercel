@@ -1,0 +1,15 @@
+FROM maven:3.9-eclipse-temurin-21 AS build
+WORKDIR /build
+COPY Splitfy/pom.xml ./pom.xml
+RUN mvn -B -ntp dependency:go-offline
+COPY Splitfy/src ./src
+RUN mvn -B -ntp -DskipTests package
+
+FROM eclipse-temurin:21-jre-jammy
+WORKDIR /app
+COPY --from=build /build/target/Splitfy-0.0.1-SNAPSHOT.jar app.jar
+ENV PORT=8080
+ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=70 -XX:+ExitOnOutOfMemoryError"
+EXPOSE 8080
+USER 10001
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

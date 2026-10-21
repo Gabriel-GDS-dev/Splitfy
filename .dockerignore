@@ -1,0 +1,8 @@
+**
+!Splitfy/
+!Splitfy/pom.xml
+!Splitfy/src/
+!Splitfy/src/**
+Splitfy/src/main/resources/application-local.properties
+Splitfy/src/test/
+Dockerfile.vercel

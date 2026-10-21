@@ -59,7 +59,7 @@ public class ConfiguracaoSeguranca {
     }
 
     @Bean
-    SecretKey chaveJwt(@Value("${splitfy.jwt.secret:minha_chave_secreta_padrao_para_desenvolvimento_123456789}") String segredo) {
+    SecretKey chaveJwt(@Value("${splitfy.jwt.secret}") String segredo) {
         byte[] bytes = segredo.getBytes(StandardCharsets.UTF_8);
         if (bytes.length < 32) {
             throw new IllegalArgumentException("SPLITFY_JWT_SECRET deve ter pelo menos 32 bytes.");
