@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="./assets/styles.css">
     <script defer src="./assets/lucide.min.js"></script>
     <script defer src="./assets/auth.js"></script>
+    <script defer src="./assets/providers.js"></script>
     <script defer src="./assets/app.js"></script>
 </head>
 <body>
@@ -175,6 +176,11 @@
                 <div class="data-table" id="users-table"></div>
             </section>
 
+            <section id="provider-panel" class="provider-panel" aria-label="Fonte de reprodução" hidden>
+                <div class="provider-toolbar"><strong id="provider-title">Reprodução</strong><label>Ouvir com <select id="provider-source" aria-label="Fonte de reprodução"></select></label><button id="provider-fallback" class="secondary-button" type="button">Tentar outra fonte</button></div>
+                <p id="provider-status" role="status" aria-live="polite"></p>
+                <div id="provider-embed"></div>
+            </section>
             <footer class="app-footer">
                 <div class="footer-brand"><i data-lucide="audio-waveform"></i><strong>Splitfy</strong></div>
                 <div class="authors">

@@ -17,7 +17,7 @@ public final class AlbumMapper {
     public static void updateEntity(Album album, AlbumRequest request, Artista artista) {
         album.setTitulo(request.titulo());
         album.setAnoLancamento(request.anoLancamento());
-        album.setCapaUrl(request.capaUrl());
+        album.setCapaUrl(com.example.Splitfy.catalog.service.LinkImagem.normalizar(request.capaUrl()));
         album.setArtista(artista);
     }
 

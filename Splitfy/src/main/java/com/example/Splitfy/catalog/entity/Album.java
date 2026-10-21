@@ -27,7 +27,7 @@ public class Album {
     @Column(name = "ano_lancamento")
     private Integer anoLancamento;
 
-    @Column(name = "capa_url", length = 500)
+    @Column(name = "capa_url", length = 2048)
     private String capaUrl;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

@@ -78,6 +78,7 @@ public class MusicaService {
                 request.albumId(),
                 genero
         );
+        fontes(musica, request);
         return toResponse(musicaRepository.save(musica));
     }
 
@@ -93,6 +94,7 @@ public class MusicaService {
         musica.setNumeroFaixa(request.numeroFaixa());
         musica.setAlbumId(request.albumId());
         musica.setGenero(genero);
+        fontes(musica, request);
 
         return toResponse(musicaRepository.save(musica));
     }
@@ -136,6 +138,12 @@ public class MusicaService {
         }
     }
 
+    private void fontes(Musica musica, MusicaRequest request) {
+        musica.setSpotifyUrl(LinksMusicais.spotify(request.spotifyUrl()));
+        musica.setYoutubeUrl(LinksMusicais.youtube(request.youtubeUrl()));
+        musica.setFontePreferida(LinksMusicais.preferida(request.fontePreferida()));
+    }
+
     private Genero buscarGenero(Long id) {
         return generoRepository.findById(id)
                 .orElseThrow(() -> new CatalogNotFoundException("Genero nao encontrado."));
@@ -169,7 +177,11 @@ public class MusicaService {
                 musica.getAlbumId(),
                 musica.getGenero().getId(),
                 musica.getGenero().getNome(),
-                musica.getCriadoEm()
+                musica.getCriadoEm(),
+                musica.getSpotifyUrl(),
+                musica.getYoutubeUrl(),
+                musica.getFontePreferida(),
+                musica.isAudioDisponivel()
         );
     }
 }

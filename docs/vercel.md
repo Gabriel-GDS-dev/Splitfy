@@ -32,7 +32,7 @@ para o pool e `POSTGRES_URL` para a conexão direta. Não coloque usuário/senha
 na URL JDBC nem em arquivos versionados. Armazene credenciais e chave JWT como
 Secret na Vercel. Use outro banco para Preview antes de habilitar esse ambiente.
 
-O Flyway aplica V1 a V12 na inicialização, mantendo o histórico e validando
+O Flyway aplica V1 a V13 na inicialização, mantendo o histórico e validando
 migrations já aplicadas. Não habilite `baseline-on-migrate`, não use `clean`
 e não recrie um banco que já contenha dados. O pool limita cada instância a três
 conexões. A integração cria um banco vazio; ela não copia registros do Postgres
@@ -76,3 +76,6 @@ Os cadastros antigos são preservados. O player anterior apenas simulava plays:
 cadastros sem MP3 continuam sem áudio até que o arquivo original seja enviado.
 A ausência da miniatura no painel da Vercel não é controlada por uma imagem
 no projeto; conferir novamente após a geração da nova implantação estática.
+
+Para busca de músicas no Spotify/YouTube e imagens por link, consulte
+[integrações musicais](integracoes-musicais.md).

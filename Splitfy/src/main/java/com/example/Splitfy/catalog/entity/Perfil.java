@@ -22,7 +22,7 @@ public class Perfil {
     @Column(columnDefinition = "TEXT")
     private String bio;
 
-    @Column(name = "foto_url", length = 500)
+    @Column(name = "foto_url", length = 2048)
     private String fotoUrl;
 
     @Column(name = "criado_em", nullable = false, insertable = false, updatable = false)

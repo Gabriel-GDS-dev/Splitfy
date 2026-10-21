@@ -39,7 +39,7 @@ public class PerfilService {
         if (perfilRepository.existsByUsuarioId(usuarioId)) {
             throw new UsuarioValidationException("Dados de perfil invalidos.", Map.of("usuarioId", "O usuario ja possui um perfil."));
         }
-        Perfil perfil = new Perfil(usuario, request.nomeExibicao().trim(), limpar(request.bio()), limpar(request.fotoUrl()));
+        Perfil perfil = new Perfil(usuario, request.nomeExibicao().trim(), limpar(request.bio()), LinkImagem.normalizar(request.fotoUrl()));
         return toResponse(perfilRepository.save(perfil));
     }
 
@@ -51,7 +51,7 @@ public class PerfilService {
                 .orElseThrow(() -> new UsuarioNotFoundException("Perfil nao encontrado."));
         perfil.setNomeExibicao(request.nomeExibicao().trim());
         perfil.setBio(limpar(request.bio()));
-        perfil.setFotoUrl(limpar(request.fotoUrl()));
+        perfil.setFotoUrl(LinkImagem.normalizar(request.fotoUrl()));
         return toResponse(perfilRepository.save(perfil));
     }
 

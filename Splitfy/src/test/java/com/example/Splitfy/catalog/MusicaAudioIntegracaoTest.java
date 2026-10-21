@@ -49,7 +49,11 @@ class MusicaAudioIntegracaoTest {
         mvc.perform(get(path).header("Range", "bytes=0-3").with(user))
                 .andExpect(status().isPartialContent()).andExpect(content().bytes(new byte[]{mp3[0], mp3[1], mp3[2], mp3[3]}));
         mvc.perform(get("/api/musicas/901").with(user)).andExpect(status().isOk())
-                .andExpect(jsonPath("$.titulo").value("Audio teste"));
+                .andExpect(jsonPath("$.titulo").value("Audio teste"))
+                .andExpect(jsonPath("$.audioDisponivel").value(true));
+        jdbc.update("INSERT INTO musica (id, titulo, duracao_segundos, album_id, genero_id) VALUES (902, 'Sem MP3', 2, 901, 901)");
+        mvc.perform(get("/api/musicas/902").with(user)).andExpect(status().isOk())
+                .andExpect(jsonPath("$.audioDisponivel").value(false));
         jdbc.update("DELETE FROM musica WHERE id = 901");
         assertThat(jdbc.queryForObject("SELECT count(*) FROM musica_audio WHERE musica_id = 901", Integer.class)).isZero();
     }

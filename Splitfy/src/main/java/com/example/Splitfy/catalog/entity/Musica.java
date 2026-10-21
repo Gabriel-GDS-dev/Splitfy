@@ -42,6 +42,26 @@ public class Musica {
     @Column(name = "criado_em", insertable = false, updatable = false)
     private LocalDateTime criadoEm;
 
+    @Column(name = "spotify_url", length = 200)
+    private String spotifyUrl;
+
+    @Column(name = "youtube_url", length = 200)
+    private String youtubeUrl;
+
+    @Column(name = "fonte_preferida", nullable = false, length = 10)
+    private String fontePreferida = "AUTO";
+
+    @org.hibernate.annotations.Formula("(select count(*) > 0 from musica_audio a where a.musica_id = id)")
+    private boolean audioDisponivel;
+
+    public String getSpotifyUrl() { return spotifyUrl; }
+    public void setSpotifyUrl(String valor) { spotifyUrl = valor; }
+    public String getYoutubeUrl() { return youtubeUrl; }
+    public void setYoutubeUrl(String valor) { youtubeUrl = valor; }
+    public String getFontePreferida() { return fontePreferida; }
+    public void setFontePreferida(String valor) { fontePreferida = valor; }
+    public boolean isAudioDisponivel() { return audioDisponivel; }
+
     protected Musica() {
     }
 

@@ -1632,3 +1632,27 @@ dialog::backdrop {
 [hidden] {
     display: none !important;
 }
+
+.cover-art { position: relative; overflow: hidden; }
+.remote-cover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+.image-preview { color: var(--muted); font-size: .85rem; line-height: 1.5; margin-top: 8px; }
+.image-preview img { display: block; width: 120px; height: 120px; object-fit: cover; border-radius: 12px; }
+.profile-photo { display: inline-block; width: 36px; height: 36px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+.provider-panel { margin: 24px 0; padding: 20px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
+.provider-toolbar { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.provider-toolbar strong { margin-right: auto; }
+.provider-toolbar label { display: flex; align-items: center; gap: 8px; }
+.provider-toolbar select { color: var(--text); background: var(--surface-2); padding: 8px; border: 1px solid var(--line); border-radius: 8px; }
+#provider-status, #music-lookup-status { color: var(--muted); font-size: .85rem; line-height: 1.5; margin: 12px 0; }
+#provider-embed { max-width: 680px; }
+#provider-embed:empty { display: none; }
+#provider-embed iframe { display: block; width: 100%; border: 0; border-radius: 12px; min-width: 200px; }
+.lookup-controls { display: flex; gap: 8px; }
+.lookup-controls input { min-width: 0; flex: 1; }
+.lookup-results { display: grid; gap: 8px; }
+.lookup-result { width: 100%; display: flex; gap: 12px; align-items: center; text-align: left; padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--text); cursor: pointer; }
+.lookup-result:hover { border-color: var(--green); }
+.lookup-result > span:nth-child(2) { flex: 1; min-width: 0; }
+.lookup-result small { display: block; color: var(--muted); margin-top: 4px; }
+.lookup-cover { width: 48px; height: 48px; flex-shrink: 0; border-radius: 8px; }
+@media (max-width: 600px) { .provider-panel { padding: 12px; } .lookup-result > span:last-child { font-size: .75rem; } }

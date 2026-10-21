@@ -11,7 +11,7 @@ import jakarta.validation.constraints.Size;
 public record AlbumRequest(
         @Schema(example = "1989") @NotBlank @Size(max = 200) String titulo,
         @Schema(description = "Entre 1900 e o ano atual", example = "2014") @Min(1900) Integer anoLancamento,
-        @Schema(example = "https://exemplo.com/capas/1989.jpg") @Size(max = 500) String capaUrl,
+        @Schema(example = "https://exemplo.com/capas/1989.jpg") @Size(max = 2048) String capaUrl,
         @Schema(description = "Id de um artista já cadastrado", example = "1") @NotNull Long artistaId
 ) {
 }

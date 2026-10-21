@@ -5,6 +5,9 @@ public record MusicaRequest(
         Integer duracaoSegundos,
         Integer numeroFaixa,
         Long albumId,
-        Long generoId
+        Long generoId,
+        String spotifyUrl,
+        String youtubeUrl,
+        String fontePreferida
 ) {
 }

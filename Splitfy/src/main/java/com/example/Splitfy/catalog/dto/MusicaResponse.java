@@ -11,6 +11,10 @@ public record MusicaResponse(
         Long albumId,
         Long generoId,
         String generoNome,
-        LocalDateTime criadoEm
+        LocalDateTime criadoEm,
+        String spotifyUrl,
+        String youtubeUrl,
+        String fontePreferida,
+        boolean audioDisponivel
 ) {
 }
