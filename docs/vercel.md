@@ -6,6 +6,8 @@ Other e sem comandos de build/install/output personalizados. A Vercel detecta
 `vercel.json` declara explicitamente o serviço container e encaminha todas as
 rotas a ele. `Dockerfile.vercel` compila a aplicação com Java 21. Container
 Runtime e Services são recursos beta da Vercel, disponíveis em todos os planos.
+O JRE limita a compilação inicial ao nível 1 para reduzir o tempo de partida
+quando a Vercel inicia uma nova instância depois de um período sem acessos.
 
 ## Banco e segredos
 
