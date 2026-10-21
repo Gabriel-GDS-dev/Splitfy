@@ -1,0 +1,5 @@
+CREATE TABLE musica_audio (
+    musica_id BIGINT PRIMARY KEY REFERENCES musica(id) ON DELETE CASCADE,
+    conteudo BYTEA NOT NULL,
+    atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

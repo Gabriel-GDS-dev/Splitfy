@@ -49,7 +49,7 @@ class SwaggerIntegracaoTest {
             JsonNode doc = JsonMapper.builder().build().readTree(json);
             assertThat(doc.path("paths").propertyNames()).containsExactlyInAnyOrder(
                     "/api/generos", "/api/generos/{id}", "/api/generos/{id}/musicas",
-                    "/api/musicas", "/api/musicas/{id}", "/api/musicas/{id}/play", "/api/auth/login");
+                    "/api/musicas", "/api/musicas/{id}", "/api/musicas/{id}/audio", "/api/musicas/{id}/play", "/api/auth/login");
             assertThat(doc.at("/components/securitySchemes/bearerAuth/scheme").asText()).isEqualTo("bearer");
             JsonNode paths = doc.path("paths");
             int operacoes = 0;
@@ -66,7 +66,7 @@ class SwaggerIntegracaoTest {
                     operacoes++;
                 }
             }
-            assertThat(operacoes).isEqualTo(12);
+            assertThat(operacoes).isEqualTo(14);
             JsonNode criar = paths.path("/api/musicas").path("post");
             assertThat(criar.at("/requestBody/required").asBoolean()).isTrue();
             assertThat(criar.at("/requestBody/content/application~1json/schema/$ref").asText())

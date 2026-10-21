@@ -82,7 +82,21 @@
         toast: document.querySelector("#toast")
     };
 
+    const audio = new Audio();
+    audio.preload = "metadata";
+    audio.volume = 0.7;
+    let audioUrl = null;
+    let playbackRequest = 0;
     let toastTimer;
+
+    function clearAudio() {
+        playbackRequest += 1;
+        audio.pause();
+        audio.removeAttribute("src");
+        audio.load();
+        if (audioUrl) URL.revokeObjectURL(audioUrl);
+        audioUrl = null;
+    }
 
     function escapeHtml(value) {
         return String(value ?? "")
@@ -161,8 +175,11 @@
         if (!session) throw new Error("Entre na sua conta para acessar a biblioteca.");
         options.headers.Authorization = `Bearer ${session.token}`;
         if (body !== undefined) {
-            options.headers["Content-Type"] = "application/json";
-            options.body = JSON.stringify(body);
+            if (body instanceof FormData) options.body = body;
+            else {
+                options.headers["Content-Type"] = "application/json";
+                options.body = JSON.stringify(body);
+            }
         }
 
         const response = await fetch(targetUrl, options);
@@ -764,7 +781,8 @@
                 + selectField("albumId", "Álbum", optionList(state.albums, "titulo"), item?.albumId)
                 + selectField("generoId", "Gênero", optionList(state.genres), item?.generoId)
                 + inputField("duracaoSegundos", "Duração em segundos", item?.duracaoSegundos, { type: "number", min: 1, required: true })
-                + inputField("numeroFaixa", "Número da faixa", item?.numeroFaixa, { type: "number", min: 1 });
+                + inputField("numeroFaixa", "Número da faixa", item?.numeroFaixa, { type: "number", min: 1 })
+                + `<div class="form-field is-wide"><label for="field-arquivo">Arquivo MP3 (até 4 MB)</label><input id="field-arquivo" name="arquivo" type="file" accept=".mp3,audio/mpeg"><small>Envie uma música sua ou que você tenha autorização para disponibilizar. Ao editar, deixe vazio para manter o áudio atual.</small></div>`;
         } else if (kind === "usuario") {
             title = isEdit ? "Editar usuário" : "Novo usuário";
             fields = inputField("nome", "Nome", item?.nome, { required: true, wide: true })
@@ -839,7 +857,15 @@
                 await request(`/api/generos${item ? `/${item.id}` : ""}`, { method: item ? "PUT" : "POST", body });
             } else if (kind === "musica") {
                 const body = { titulo: data.get("titulo"), albumId: formNumber(data, "albumId"), generoId: formNumber(data, "generoId"), duracaoSegundos: formNumber(data, "duracaoSegundos"), numeroFaixa: formNumber(data, "numeroFaixa") };
-                await request(`/api/musicas${item ? `/${item.id}` : ""}`, { method: item ? "PUT" : "POST", body });
+                const arquivo = data.get("arquivo");
+                if (arquivo?.size > 4 * 1024 * 1024) throw new Error("O MP3 deve ter até 4 MB.");
+                const saved = await request(`/api/musicas${item ? `/${item.id}` : ""}`, { method: item ? "PUT" : "POST", body });
+                state.editor.item = saved;
+                if (arquivo?.size) {
+                    const upload = new FormData();
+                    upload.append("arquivo", arquivo);
+                    await request(`/api/musicas/${saved.id}/audio`, { method: "PUT", body: upload });
+                }
             } else if (kind === "usuario") {
                 const body = { nome: data.get("nome"), email: data.get("email"), senha: data.get("senha") || null, dataNascimento: data.get("dataNascimento"), role: data.get("role") };
                 await request(`/api/usuarios${item ? `/${item.id}` : ""}`, { method: item ? "PUT" : "POST", body });
@@ -918,17 +944,33 @@
         const activeUser = userById(state.activeUserId);
         if (!song) return showToast("Música não encontrada.");
         if (!activeUser?.ativo) return showToast("Selecione um usuário ativo antes de reproduzir.");
+        clearAudio();
+        const version = playbackRequest;
+        const session = window.splitfyAuth.getSession();
         try {
+            const response = await fetch(`/api/musicas/${song.id}/audio`, {
+                headers: { Authorization: `Bearer ${session.token}` }
+            });
+            if (response.status === 401) { window.splitfyAuth.expire(); throw new Error("Sua sessão expirou."); }
+            if (!response.ok) throw new Error(response.status === 404
+                ? "Esta música ainda não possui MP3. Edite a música para enviar o arquivo."
+                : "Não foi possível carregar o áudio.");
+            const blob = await response.blob();
+            if (version !== playbackRequest || window.splitfyAuth.getSession()?.token !== session.token) return;
+            audioUrl = URL.createObjectURL(blob);
+            audio.src = audioUrl;
+            state.currentSongId = song.id;
+            state.progressSeconds = 0;
+            await audio.play();
             const updated = await request(`/api/musicas/${song.id}/play`, { method: "POST", body: { usuarioId: activeUser.id } });
+            if (version !== playbackRequest) return;
             const index = state.songs.findIndex((item) => item.id === song.id);
             if (index >= 0) state.songs[index] = updated;
             state.currentSongId = song.id;
-            state.isPlaying = true;
-            state.progressSeconds = 0;
             state.history = unwrapList(await request(`/api/usuarios/${activeUser.id}/historico?limite=100`));
             renderAll();
         } catch (error) {
-            showToast(error.message);
+            if (version === playbackRequest) showToast(error.message);
         }
     }
 
@@ -1067,8 +1109,8 @@
         elements.confirmAction.addEventListener("click", runConfirmedAction);
         elements.playerToggle.addEventListener("click", () => {
             if (!state.currentSongId) return;
-            state.isPlaying = !state.isPlaying;
-            renderPlayer();
+            if (audio.paused) audio.play().catch(() => showToast("Não foi possível reproduzir o áudio."));
+            else audio.pause();
         });
         elements.playerPrevious.addEventListener("click", () => adjacentSong(-1));
         elements.playerNext.addEventListener("click", () => adjacentSong(1));
@@ -1085,19 +1127,26 @@
             if (validRoutes.has(route)) setView(route, { updateHash: false });
         });
 
-        setInterval(() => {
-            const song = songById(state.currentSongId);
-            if (!state.isPlaying || !song) return;
-            state.progressSeconds += 1;
-            if (state.progressSeconds >= (song.duracaoSegundos || 1)) {
-                state.progressSeconds = 0;
-                state.isPlaying = false;
-            }
+        audio.addEventListener("timeupdate", () => {
+            state.progressSeconds = audio.currentTime;
+            elements.playerProgress.style.width = `${Number.isFinite(audio.duration) && audio.duration > 0 ? audio.currentTime / audio.duration * 100 : 0}%`;
+        });
+        for (const name of ["play", "pause", "ended"]) audio.addEventListener(name, () => {
+            state.isPlaying = !audio.paused && !audio.ended;
             renderPlayer();
-        }, 1000);
+        });
+        audio.addEventListener("error", () => {
+            state.isPlaying = false;
+            renderPlayer();
+            showToast("Não foi possível decodificar este MP3. Verifique o arquivo enviado.");
+        });
+        document.querySelector('.player-volume input').addEventListener("input", (event) => {
+            audio.volume = Number(event.target.value) / 100;
+        });
     }
 
     window.addEventListener("splitfy:session", () => {
+        clearAudio();
         state.artists = [];
         state.albums = [];
         state.genres = [];

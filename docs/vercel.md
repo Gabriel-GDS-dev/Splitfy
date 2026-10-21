@@ -1,10 +1,12 @@
 # Splitfy na Vercel
 
-O deploy inclui a API Spring Boot e o frontend do mesmo JAR. A raiz do projeto
+O deploy inclui a API Spring Boot em container e o frontend estático na CDN,
+sem esperar a inicialização do Java para exibir a página. O JAR também inclui
+o frontend para desenvolvimento local. A raiz do projeto
 na Vercel deve ser a raiz do repositório (Root Directory vazio), com framework
-Other e sem comandos de build/install/output personalizados. A Vercel detecta
-`vercel.json` declara explicitamente o serviço container e encaminha todas as
-rotas a ele. `Dockerfile.vercel` compila a aplicação com Java 21. Container
+Other e sem comandos de build/install/output personalizados. O arquivo
+`vercel.json` declara o serviço estático para a interface e o container para
+as rotas da API e do Swagger. `Dockerfile.vercel` compila a aplicação com Java 21. Container
 Runtime e Services são recursos beta da Vercel, disponíveis em todos os planos.
 O JRE limita a compilação inicial ao nível 1 para reduzir o tempo de partida
 quando a Vercel inicia uma nova instância depois de um período sem acessos.
@@ -30,7 +32,7 @@ para o pool e `POSTGRES_URL` para a conexão direta. Não coloque usuário/senha
 na URL JDBC nem em arquivos versionados. Armazene credenciais e chave JWT como
 Secret na Vercel. Use outro banco para Preview antes de habilitar esse ambiente.
 
-O Flyway aplica V1 a V11 na inicialização, mantendo o histórico e validando
+O Flyway aplica V1 a V12 na inicialização, mantendo o histórico e validando
 migrations já aplicadas. Não habilite `baseline-on-migrate`, não use `clean`
 e não recrie um banco que já contenha dados. O pool limita cada instância a três
 conexões. A integração cria um banco vazio; ela não copia registros do Postgres
@@ -56,3 +58,21 @@ UPDATE usuario SET role = 'ADMIN' WHERE email = 'seu-email';
 
 O catálogo aparece conforme os registros salvos no banco. Não há criação
 automática de contas, músicas ou senhas de demonstração.
+
+## Arquivos MP3
+
+Entre como administrador e use Músicas → Nova música ou Editar música.
+Selecione um MP3 de até 4 MB no campo Arquivo MP3 e salve. Deixar o campo vazio
+mantém o áudio existente. É possível enviar gravações próprias ou de terceiros
+que você tenha autorização para disponibilizar.
+
+`PUT /api/musicas/{id}/audio` recebe multipart com campo `arquivo`, apenas para
+ADMIN. `GET /api/musicas/{id}/audio` exige autenticação e retorna `audio/mpeg`,
+com suporte a Range. Os bytes ficam na tabela `musica_audio`, vinculada ao
+cadastro com exclusão em cascata, sem depender do disco temporário do container.
+As consultas ao catálogo não carregam os bytes dos arquivos.
+
+Os cadastros antigos são preservados. O player anterior apenas simulava plays:
+cadastros sem MP3 continuam sem áudio até que o arquivo original seja enviado.
+A ausência da miniatura no painel da Vercel não é controlada por uma imagem
+no projeto; conferir novamente após a geração da nova implantação estática.

@@ -1,6 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "services": {
+    "frontend": {
+      "root": "Splitfy/src/main/resources/static",
+      "outputDirectory": "."
+    },
     "splitfy": {
       "root": ".",
       "runtime": "container",
@@ -8,6 +12,10 @@
     }
   },
   "rewrites": [
-    { "source": "/(.*)", "destination": { "service": "splitfy" } }
+    { "source": "/api/:path*", "destination": { "service": "splitfy" } },
+    { "source": "/swagger-ui.html", "destination": { "service": "splitfy" } },
+    { "source": "/swagger-ui/:path*", "destination": { "service": "splitfy" } },
+    { "source": "/v3/:path*", "destination": { "service": "splitfy" } },
+    { "source": "/(.*)", "destination": { "service": "frontend" } }
   ]
 }
