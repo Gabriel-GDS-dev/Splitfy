@@ -51,7 +51,12 @@
                 api.createController(host, { uri: `spotify:track:${id}`, width: "100%", height: 152 }, (embed) => {
                     if (!valid()) { clearTimeout(timeout); embed.destroy(); resolve(); return; }
                     controller = embed;
-                    embed.addListener("ready", () => { clearTimeout(timeout); if (valid()) { embed.play(); resolve(); } });
+                    embed.addListener("ready", () => {
+                        clearTimeout(timeout);
+                        if (valid()) embed.play();
+                        else embed.destroy();
+                        resolve();
+                    });
                     embed.addListener("playback_started", () => { if (valid()) callbacks.onStarted(); });
                     embed.addListener("playback_update", (event) => {
                         if (!valid()) return;

@@ -41,7 +41,7 @@ local automaticamente.
 ## Publicação e verificação
 
 1. Execute os testes em `Splitfy/`: `./mvnw test` e
-   `node --test src/test/frontend/auth.test.cjs`.
+   `node --test src/test/frontend/*.test.cjs`.
 2. Vincule a pasta raiz ao projeto correto com `vercel link` e confirme com
    `vercel project inspect --non-interactive`.
 3. Publique com `vercel deploy --prod --skip-domain`.

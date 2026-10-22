@@ -1,9 +1,10 @@
 # Spotify, YouTube e MP3
 
 Em **Músicas → Nova música**, busque pelo nome da faixa e cantor, escolha o
-resultado e confira os dados antes de salvar. É possível selecionar um resultado
-de cada serviço para a mesma faixa. A primeira seleção preenche título, duração,
-artista, álbum e capa; confirme o nome do cantor, pois o YouTube informa o canal.
+resultado e confira os dados antes de salvar. **Usar faixa** preenche ou substitui
+título, duração, artista, álbum e capa. **Adicionar só a fonte** vincula outro
+serviço sem substituir os dados da faixa escolhida. Confirme o nome do cantor,
+pois o YouTube informa o canal.
 O álbum e o artista podem ser criados durante o cadastro ou selecionados entre
 os já existentes. Se o gênero não for conhecido, selecione Sem classificação.
 

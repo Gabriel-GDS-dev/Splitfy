@@ -338,6 +338,11 @@
             state.albums = unwrapList(albums);
             state.genres = unwrapList(genres);
             state.songs = unwrapList(songs);
+            if (state.currentSongId && !state.songs.some(song => song.id === state.currentSongId)) {
+                clearAudio();
+                state.currentSongId = null;
+                document.querySelector("#provider-panel").hidden = true;
+            }
             state.users = unwrapList(users);
             state.playlists = unwrapList(playlists);
 
@@ -914,6 +919,9 @@
                 const body = { nome: data.get("nome"), descricao: data.get("descricao") || null };
                 await request(`/api/generos${item ? `/${item.id}` : ""}`, { method: item ? "PUT" : "POST", body });
             } else if (kind === "musica") {
+                const arquivo = data.get("arquivo");
+                if (arquivo?.size > 4 * 1024 * 1024) throw new Error("O MP3 deve ter até 4 MB.");
+                if (arquivo?.size && !arquivo.name.toLowerCase().endsWith(".mp3")) throw new Error("Escolha um arquivo com extensão .mp3.");
                 let albumId = formNumber(data, "albumId");
                 let generoId = formNumber(data, "generoId");
                 if (data.get("albumId") === "importar") {
@@ -945,8 +953,6 @@
                     generoId = genre.id;
                 }
                 const body = { titulo: data.get("titulo"), albumId, generoId, duracaoSegundos: formNumber(data, "duracaoSegundos"), numeroFaixa: formNumber(data, "numeroFaixa"), spotifyUrl: data.get("spotifyUrl") || null, youtubeUrl: data.get("youtubeUrl") || null, fontePreferida: data.get("fontePreferida") || "AUTO" };
-                const arquivo = data.get("arquivo");
-                if (arquivo?.size > 4 * 1024 * 1024) throw new Error("O MP3 deve ter até 4 MB.");
                 const saved = await request(`/api/musicas${item ? `/${item.id}` : ""}`, { method: item ? "PUT" : "POST", body });
                 state.editor.item = saved;
                 if (arquivo?.size) {
@@ -1042,7 +1048,7 @@
             if (version !== searchVersion || !elements.editorDialog.open) return;
             searchResults = response.resultados;
             status.textContent = response.avisos.join(" ") || (searchResults.length ? "Escolha a faixa correta. Você pode adicionar uma fonte de cada serviço." : "Nenhuma faixa encontrada. Tente nome e cantor ou cadastre o link.");
-            results.innerHTML = searchResults.map((result, index) => `<button type="button" class="lookup-result" data-import-result="${index}"><span class="lookup-cover cover-art">${coverImage(result.capaUrl, result.titulo)}</span><span><strong>${escapeHtml(result.titulo)}</strong><small>${escapeHtml(result.artista)} · ${result.fonte === "SPOTIFY" ? "Spotify" : "YouTube"}</small></span><span>Usar faixa</span></button>`).join("");
+            results.innerHTML = searchResults.map((result, index) => `<div class="lookup-result"><span class="lookup-cover cover-art">${coverImage(result.capaUrl, result.titulo)}</span><span><strong>${escapeHtml(result.titulo)}</strong><small>${escapeHtml(result.artista)} · ${result.fonte === "SPOTIFY" ? "Spotify" : "YouTube"}</small></span><div class="lookup-actions"><button type="button" class="secondary-button" data-import-result="${index}" aria-label="Usar faixa: ${escapeHtml(result.titulo)} · ${escapeHtml(result.artista)}">Usar faixa</button><button type="button" class="secondary-button" data-import-result="${index}" data-source-only="true" aria-label="Adicionar fonte ${result.fonte}: ${escapeHtml(result.titulo)}">Adicionar só a fonte</button></div></div>`).join("");
         } catch (error) { if (version === searchVersion) status.textContent = error.message; }
         finally { if (version === searchVersion) button.disabled = false; }
     }
@@ -1138,9 +1144,11 @@
             audio.onerror = () => fallback(new Error("Não foi possível reproduzir este MP3."));
             audio.onplaying = started;
             await audio.play();
+            if (version !== playbackRequest) return;
             started();
             status.textContent = "Reproduzindo o MP3 salvo no Splitfy.";
         } catch (error) {
+            if (version !== playbackRequest) return;
             if (error.name === "NotAllowedError") status.textContent = "Pressione Play para começar a reprodução.";
             else fallback(error);
         }
@@ -1210,6 +1218,32 @@
         }
     }
 
+    function applyMusicResult(result, sourceOnly = false) {
+        const status = document.querySelector("#music-lookup-status");
+        if (sourceOnly && !document.querySelector('[name="titulo"]').value.trim()) {
+            status.textContent = "Escolha Usar faixa primeiro; depois adicione outra fonte para essa mesma música.";
+            return;
+        }
+        const field = result.fonte === "SPOTIFY" ? '[name="spotifyUrl"]' : '[name="youtubeUrl"]';
+        if (!sourceOnly) {
+            if (state.editor.importResult && state.editor.importResult.url !== result.url) {
+                document.querySelector(result.fonte === "SPOTIFY" ? '[name="youtubeUrl"]' : '[name="spotifyUrl"]').value = "";
+            }
+            document.querySelector('[name="titulo"]').value = result.titulo;
+            document.querySelector('[name="duracaoSegundos"]').value = result.duracaoSegundos || "";
+            state.editor.importResult = result;
+            state.editor.importAlbumId = null;
+            state.editor.imported = true;
+            document.querySelector("#import-metadata").hidden = false;
+            document.querySelector("#import-artist").value = result.artista;
+            document.querySelector("#import-album").value = result.album || result.titulo;
+            document.querySelector('[name="albumId"]').value = "importar";
+            if (!document.querySelector('[name="generoId"]').value) document.querySelector('[name="generoId"]').value = "novo";
+        }
+        document.querySelector(field).value = result.url;
+        status.textContent = `${result.fonte === "SPOTIFY" ? "Spotify" : "YouTube"} vinculado: ${result.titulo} · ${result.artista}. Confira se as fontes correspondem à mesma música e revise os dados antes de salvar.`;
+    }
+
     function bindEvents() {
         document.addEventListener("error", (event) => {
             if (event.target.matches?.("img.remote-cover")) {
@@ -1222,21 +1256,7 @@
             if (importResult && state.editor?.kind === "musica") {
                 const result = searchResults[Number(importResult.dataset.importResult)];
                 if (!result) return;
-                document.querySelector(result.fonte === "SPOTIFY" ? '[name="spotifyUrl"]' : '[name="youtubeUrl"]').value = result.url;
-                if (!state.editor.imported) {
-                    document.querySelector('[name="titulo"]').value = result.titulo;
-                    if (result.duracaoSegundos) document.querySelector('[name="duracaoSegundos"]').value = result.duracaoSegundos;
-                }
-                if (!state.editor.imported) {
-                    state.editor.importResult = result;
-                    document.querySelector("#import-metadata").hidden = false;
-                    document.querySelector("#import-artist").value = result.artista;
-                    document.querySelector("#import-album").value = result.album || result.titulo;
-                    if (!state.editor.item) document.querySelector('[name="albumId"]').value = "importar";
-                    if (!document.querySelector('[name="generoId"]').value) document.querySelector('[name="generoId"]').value = "novo";
-                }
-                state.editor.imported = true;
-                document.querySelector("#music-lookup-status").textContent = `${result.fonte === "SPOTIFY" ? "Spotify" : "YouTube"} vinculado: ${result.titulo} · ${result.artista}. Confira o álbum, gênero e duração antes de salvar.`;
+                applyMusicResult(result, importResult.dataset.sourceOnly === "true");
                 return;
             }
             const routeButton = event.target.closest("[data-route]");
@@ -1278,6 +1298,9 @@
             renderSongs();
         });
         elements.activeUser.addEventListener("change", async () => {
+            clearAudio();
+            state.currentSongId = null;
+            document.querySelector("#provider-panel").hidden = true;
             state.activeUserId = Number(elements.activeUser.value) || null;
             if (state.activeUserId) localStorage.setItem("splitfy.activeUser", String(state.activeUserId));
             else localStorage.removeItem("splitfy.activeUser");
