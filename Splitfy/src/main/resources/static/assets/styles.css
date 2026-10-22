@@ -1478,23 +1478,10 @@ dialog::backdrop {
     }
 
     .hero-signature { display: none; }
-    .metric:nth-child(n) { border: 1px solid var(--line); }
     .content-block { padding: 20px; }
 
     .metric-strip {
         grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .metric:nth-child(3) {
-        border-right: 0;
-    }
-
-    .metric:nth-child(n+4) {
-        border-top: 1px solid var(--line);
-    }
-
-    .metric:last-child {
-        border-right: 1px solid var(--line);
     }
 
     .dashboard-grid,
@@ -1593,7 +1580,6 @@ dialog::backdrop {
     .metric { padding: 16px; min-height: 98px; }
     .metric strong { font-size: 1.75rem; }
     .metric > svg { width: 16px; height: 16px; top: 20px; right: 14px; }
-    .metric:nth-child(n) { border: 1px solid var(--line); }
     .metric:last-child { grid-column: 1 / -1; }
     .content-block { padding: 16px; border-radius: 14px; }
     .section-header { gap: 10px; align-items: center; }
@@ -1604,14 +1590,6 @@ dialog::backdrop {
 
     .metric-strip {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .metric:nth-child(2n) {
-        border-right: 0;
-    }
-
-    .metric:nth-child(3) {
-        border-right: 1px solid var(--line);
     }
 
     .media-grid,
