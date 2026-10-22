@@ -31,6 +31,12 @@ Abra o frontend em [http://localhost:8080/](http://localhost:8080/), com a aplic
 
 Os testes de autenticação da interface podem ser executados com Node.js: `node --test src/test/frontend/auth.test.cjs`, dentro de `Splitfy/`.
 
+Obs, Link para o Vercel:
+
+```
+   splitfy-kappa.vercel.app
+   ```
+
 ## Responsabilidades e estado atual
 
 ### Testar pelo Swagger
