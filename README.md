@@ -9,6 +9,10 @@ Este README descreve a versão integrada dos módulos da equipe. O Documento de 
 Para publicar a aplicação completa na Vercel com Prisma Postgres, consulte
 [`docs/vercel.md`](docs/vercel.md).
 
+Para instalar o site como aplicativo em celular ou computador, consulte
+[`docs/pwa.md`](docs/pwa.md). As integrações e os arquivos MP3 são descritos em
+[`docs/integracoes-musicais.md`](docs/integracoes-musicais.md).
+
 Requisitos: Java 21 ou superior e PostgreSQL. O projeto inclui o Maven Wrapper, então não é necessário instalar o Maven separadamente.
 
 1. Tenha um banco PostgreSQL chamado `Splitfy`, ou ajuste a URL de conexão para o nome do seu banco.

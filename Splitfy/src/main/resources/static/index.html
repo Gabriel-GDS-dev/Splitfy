@@ -2,15 +2,22 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0b0d0e">
     <title>Splitfy</title>
-    <link rel="icon" href="data:,">
+    <meta name="description" content="Sua biblioteca musical com músicas, álbuns e playlists no Splitfy.">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Splitfy">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg">
+    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
     <link rel="stylesheet" href="./assets/styles.css">
     <script defer src="./assets/lucide.min.js"></script>
     <script defer src="./assets/auth.js"></script>
     <script defer src="./assets/providers.js"></script>
     <script defer src="./assets/app.js"></script>
+    <script defer src="./assets/pwa.js"></script>
 </head>
 <body>
 <div class="app-shell">
@@ -39,6 +46,7 @@
             <span class="connection-dot" id="connection-dot"></span>
             <div><strong id="connection-label">Conectando</strong><span>API Splitfy</span></div>
         </div>
+        <div class="install-actions"><button id="install-app" class="secondary-button" type="button">Instalar Splitfy</button><button id="app-update" class="secondary-button" type="button" hidden>Atualização disponível</button></div>
     </aside>
 
     <button class="sidebar-scrim" id="sidebar-scrim" type="button" aria-label="Fechar navegação"></button>
@@ -60,6 +68,7 @@
         </header>
 
         <main class="workspace">
+            <p id="offline-status" class="offline-status" role="status" hidden>Você está sem conexão. O aplicativo pode abrir, mas o catálogo e a reprodução de músicas precisam de internet.</p>
             <section class="view is-active" data-view="inicio">
                 <div class="dashboard-hero">
                     <div class="hero-copy">
@@ -262,5 +271,6 @@
     </form>
 </dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<dialog class="editor-dialog" id="install-dialog" aria-labelledby="install-title"><div class="dialog-shell"><header class="dialog-header"><h2 id="install-title">Instalar Splitfy</h2></header><div class="dialog-body install-help"><p id="install-guidance"></p><p>Depois de instalar, abra pelo ícone do Splitfy na tela inicial, no menu de aplicativos ou no Dock. A reprodução de músicas exige conexão.</p></div><footer class="dialog-actions"><button id="install-close" class="primary-button" type="button">Entendi</button></footer></div></dialog>
 </body>
 </html>
