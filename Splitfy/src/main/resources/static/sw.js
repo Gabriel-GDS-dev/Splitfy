@@ -1,5 +1,5 @@
 "use strict";
-const CACHE = "splitfy-shell-v1";
+const CACHE = "splitfy-shell-v2";
 const SHELL = ["/", "/index.html", "/manifest.webmanifest", "/assets/styles.css",
     "/assets/lucide.min.js", "/assets/auth.js", "/assets/providers.js", "/assets/app.js",
     "/assets/pwa.js", "/assets/album-covers.png", "/assets/icons/icon.svg",

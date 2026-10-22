@@ -403,7 +403,7 @@
         return `<button class="table-action ${className}" type="button" title="${escapeHtml(title)}" data-action="${action}" data-id="${id}"><i data-lucide="${icon}"></i></button>`;
     }
 
-    function trackRow(song, index, extraActions = "") {
+    function trackRow(song, index, extraActions = null) {
         const album = albumById(song.albumId);
         const artist = artistById(album?.artistaId);
         return `
@@ -416,7 +416,7 @@
                 <span class="track-meta track-duration">${formatDuration(song.duracaoSegundos)}</span>
                 <div class="track-actions">
                     ${actionButton("play", "Reproduzir", "play-song", song.id, "play-action")}
-                    ${extraActions || `${actionButton("heart", "Avaliar", "review-song", song.id)}${actionButton("list-plus", "Adicionar à playlist", "add-song", song.id)}${actionButton("pencil", "Editar música", "edit-song", song.id)}${actionButton("trash-2", "Excluir música", "delete-song", song.id)}`}
+                    ${extraActions ?? `${actionButton("heart", "Avaliar", "review-song", song.id)}${actionButton("list-plus", "Adicionar à playlist", "add-song", song.id)}${actionButton("pencil", "Editar música", "edit-song", song.id)}${actionButton("trash-2", "Excluir música", "delete-song", song.id)}`}
                 </div>
             </div>`;
     }
@@ -429,19 +429,19 @@
 
         const totalPlays = state.songs.reduce((sum, song) => sum + (Number(song.reproducoes) || 0), 0);
         const metrics = [
-            [state.songs.length, "músicas"],
-            [state.albums.length, "álbuns"],
-            [state.artists.length, "artistas"],
-            [totalPlays, "reproduções"],
-            [state.playlists.length, "playlists"]
+            [state.songs.length, "músicas", "music-2"],
+            [state.albums.length, "álbuns", "disc-3"],
+            [state.artists.length, "artistas", "mic-2"],
+            [totalPlays, "reproduções", "headphones"],
+            [state.playlists.length, "playlists", "list-music"]
         ];
-        elements.metricStrip.innerHTML = metrics.map(([value, label]) =>
-            `<div class="metric"><strong>${formatNumber(value)}</strong><span>${label}</span></div>`
+        elements.metricStrip.innerHTML = metrics.map(([value, label, icon]) =>
+            `<div class="metric"><i data-lucide="${icon}" aria-hidden="true"></i><strong>${formatNumber(value)}</strong><span>${label}</span></div>`
         ).join("");
 
         const popular = [...state.songs].sort((a, b) => (b.reproducoes || 0) - (a.reproducoes || 0)).slice(0, 5);
         elements.popularTracks.innerHTML = popular.length
-            ? popular.map((song, index) => trackRow(song, index, actionButton("play", "Reproduzir", "play-song", song.id, "play-action"))).join("")
+            ? popular.map((song, index) => trackRow(song, index, "")).join("")
             : emptyState("music-2", "Nenhuma música cadastrada", "Adicione a primeira faixa ao catálogo.");
 
         const albums = state.albums.slice(0, 4);

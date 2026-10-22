@@ -4,6 +4,8 @@ const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
 const root = path.resolve(__dirname, "../../main/resources/static");
+const workerSource = fs.readFileSync(path.join(root, "sw.js"), "utf8");
+const currentCache = workerSource.match(/const CACHE = "([^"]+)"/)[1];
 
 function worker(fetch) {
     const handlers = {};
@@ -18,10 +20,10 @@ function worker(fetch) {
         self: { location: { origin: "https://splitfy.test" }, addEventListener: (name, fn) => handlers[name] = fn,
             clients: { async claim() { claimed = true; } }, skipWaiting() { activated = true; } },
         caches: { open: async () => cache, match: async key => entries.get(key),
-            keys: async () => ["splitfy-shell-v0", "splitfy-shell-v1", "other-app"], delete: async name => deleted.push(name) },
+            keys: async () => ["splitfy-shell-obsolete", currentCache, "other-app"], delete: async name => deleted.push(name) },
         URL, Response, Request: class extends Request { constructor(url, options) { super(new URL(url, "https://splitfy.test"), options); } }, fetch
     };
-    vm.runInNewContext(fs.readFileSync(path.join(root, "sw.js"), "utf8"), context);
+    vm.runInNewContext(workerSource, context);
     return { handlers, entries, deleted, cache, get claimed() { return claimed; }, get activated() { return activated; },
         request(url, options) {
             let result;
@@ -82,7 +84,7 @@ test("atualizacao remove apenas caches antigos do Splitfy e espera confirmacao",
     let activated;
     w.handlers.activate({ waitUntil(value) { activated = value; } });
     await activated;
-    assert.deepEqual(w.deleted, ["splitfy-shell-v0"]);
+    assert.deepEqual(w.deleted, ["splitfy-shell-obsolete"]);
     assert.equal(w.claimed, true);
     w.handlers.message({ data: { type: "OUTRA" } });
     assert.equal(w.activated, false);

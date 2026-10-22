@@ -20,6 +20,7 @@
     <script defer src="./assets/pwa.js"></script>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Pular para o conteúdo</a>
 <div class="app-shell">
     <aside class="sidebar" id="sidebar" aria-label="Navegação principal">
         <a class="brand" href="#inicio" data-route="inicio" aria-label="Ir para o início">
@@ -56,7 +57,7 @@
             <button class="icon-button mobile-menu" id="mobile-menu" type="button" title="Abrir menu"><i data-lucide="menu"></i></button>
             <div class="search-box">
                 <i data-lucide="search"></i>
-                <input id="global-search" type="search" placeholder="Buscar nesta tela" autocomplete="off">
+                <input id="global-search" type="search" placeholder="Buscar nesta tela" aria-label="Buscar nesta tela" autocomplete="off">
                 <kbd>Ctrl K</kbd>
             </div>
             <div class="user-switcher">
@@ -67,12 +68,12 @@
             <button class="primary-button" id="context-create" type="button"><i data-lucide="plus"></i><span>Novo</span></button>
         </header>
 
-        <main class="workspace">
+        <main class="workspace" id="main-content" tabindex="-1">
             <p id="offline-status" class="offline-status" role="status" hidden>Você está sem conexão. O aplicativo pode abrir, mas o catálogo e a reprodução de músicas precisam de internet.</p>
             <section class="view is-active" data-view="inicio">
                 <div class="dashboard-hero">
                     <div class="hero-copy">
-                        <span class="eyebrow">Biblioteca conectada</span>
+                        <span class="eyebrow hero-label"><span></span> Seu universo musical</span>
                         <h1>Som para todos os momentos.</h1>
                         <p id="hero-status">Seu catálogo em um só lugar.</p>
                         <div class="hero-actions">
@@ -86,6 +87,7 @@
                         <div class="hero-cover cover-art art-2"></div>
                         <div class="hero-cover cover-art art-3"></div>
                     </div>
+                    <span class="hero-signature" aria-hidden="true"><i data-lucide="audio-lines"></i> Seu ritmo. Seu espaço.</span>
                 </div>
 
                 <div class="metric-strip" id="metric-strip"></div>
@@ -116,7 +118,7 @@
             <section class="view" data-view="musicas" hidden>
                 <div class="view-heading">
                     <div><span class="eyebrow">Catálogo</span><h1>Músicas</h1><p id="songs-count"></p></div>
-                    <button class="primary-button" type="button" data-create="musica"><i data-lucide="plus"></i><span>Nova música</span></button>
+                    <button class="primary-button" type="button" data-create="musica" aria-label="Nova música"><i data-lucide="plus"></i><span>Nova música</span></button>
                 </div>
                 <div class="filter-row">
                     <select id="songs-genre-filter" aria-label="Filtrar por gênero"><option value="">Todos os gêneros</option></select>
@@ -129,7 +131,7 @@
             <section class="view" data-view="artistas" hidden>
                 <div class="view-heading">
                     <div><span class="eyebrow">Catálogo</span><h1>Artistas</h1><p id="artists-count"></p></div>
-                    <button class="primary-button" type="button" data-create="artista"><i data-lucide="plus"></i><span>Novo artista</span></button>
+                    <button class="primary-button" type="button" data-create="artista" aria-label="Novo artista"><i data-lucide="plus"></i><span>Novo artista</span></button>
                 </div>
                 <div class="artist-grid" id="artists-grid"></div>
             </section>
@@ -137,7 +139,7 @@
             <section class="view" data-view="albuns" hidden>
                 <div class="view-heading">
                     <div><span class="eyebrow">Catálogo</span><h1>Álbuns</h1><p id="albums-count"></p></div>
-                    <button class="primary-button" type="button" data-create="album"><i data-lucide="plus"></i><span>Novo álbum</span></button>
+                    <button class="primary-button" type="button" data-create="album" aria-label="Novo álbum"><i data-lucide="plus"></i><span>Novo álbum</span></button>
                 </div>
                 <div class="media-grid album-library" id="albums-grid"></div>
             </section>
@@ -145,7 +147,7 @@
             <section class="view" data-view="generos" hidden>
                 <div class="view-heading">
                     <div><span class="eyebrow">Catálogo</span><h1>Gêneros</h1><p id="genres-count"></p></div>
-                    <button class="primary-button" type="button" data-create="genero"><i data-lucide="plus"></i><span>Novo gênero</span></button>
+                    <button class="primary-button" type="button" data-create="genero" aria-label="Novo gênero"><i data-lucide="plus"></i><span>Novo gênero</span></button>
                 </div>
                 <div class="genre-grid" id="genres-grid"></div>
             </section>
@@ -153,7 +155,7 @@
             <section class="view" data-view="playlists" hidden>
                 <div class="view-heading">
                     <div><span class="eyebrow">Coleções</span><h1>Playlists</h1><p id="playlists-count"></p></div>
-                    <button class="primary-button" type="button" data-create="playlist"><i data-lucide="plus"></i><span>Nova playlist</span></button>
+                    <button class="primary-button" type="button" data-create="playlist" aria-label="Nova playlist"><i data-lucide="plus"></i><span>Nova playlist</span></button>
                 </div>
                 <div class="library-layout">
                     <div class="playlist-list" id="playlists-list"></div>
@@ -164,7 +166,7 @@
             <section class="view" data-view="avaliacoes" hidden>
                 <div class="view-heading">
                     <div><span class="eyebrow">Preferências</span><h1>Avaliações</h1><p id="reviews-count"></p></div>
-                    <button class="primary-button" type="button" data-create="avaliacao"><i data-lucide="plus"></i><span>Nova avaliação</span></button>
+                    <button class="primary-button" type="button" data-create="avaliacao" aria-label="Nova avaliação"><i data-lucide="plus"></i><span>Nova avaliação</span></button>
                 </div>
                 <div class="review-grid" id="reviews-grid"></div>
             </section>
@@ -180,7 +182,7 @@
             <section class="view" data-view="usuarios" hidden>
                 <div class="view-heading">
                     <div><span class="eyebrow">Comunidade</span><h1>Usuários</h1><p id="users-count"></p></div>
-                    <button class="primary-button" type="button" data-create="usuario"><i data-lucide="user-plus"></i><span>Novo usuário</span></button>
+                    <button class="primary-button" type="button" data-create="usuario" aria-label="Novo usuário"><i data-lucide="user-plus"></i><span>Novo usuário</span></button>
                 </div>
                 <div class="data-table" id="users-table"></div>
             </section>
