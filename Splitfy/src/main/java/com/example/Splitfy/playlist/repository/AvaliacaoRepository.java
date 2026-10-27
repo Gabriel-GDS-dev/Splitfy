@@ -6,8 +6,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
+import java.util.List;
+import com.example.Splitfy.playlist.dto.AvaliacaoResponse;
 
 public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Long> {
+
+    @Query("select new com.example.Splitfy.playlist.dto.AvaliacaoResponse(a.id, a.usuarioId, a.musica.id, a.curtido, a.nota, a.criadoEm) from Avaliacao a where a.usuarioId = :usuarioId order by a.id")
+    List<AvaliacaoResponse> listarPorUsuario(@Param("usuarioId") Long usuarioId);
 
     @Query("select a from Avaliacao a where a.usuarioId = :usuarioId and a.musica.id = :musicaId")
     Optional<Avaliacao> findByUsuarioIdAndMusicaId(@Param("usuarioId") Long usuarioId, @Param("musicaId") Long musicaId);

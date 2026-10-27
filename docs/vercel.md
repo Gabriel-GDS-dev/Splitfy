@@ -11,6 +11,29 @@ Runtime e Services são recursos beta da Vercel, disponíveis em todos os planos
 O JRE limita a compilação inicial ao nível 1 para reduzir o tempo de partida
 quando a Vercel inicia uma nova instância depois de um período sem acessos.
 
+## Consumo de CPU no plano Hobby
+
+Em 27/10/2026, o detalhamento dos últimos 30 dias mostrou Splitfy com 4h32min
+de Fluid Active CPU (99,9% da equipe) e PetIdentification com 15 segundos.
+O suporte concedeu um desbloqueio excepcional único, com limite 3 vezes maior
+por 30 dias. Isso não altera permanentemente a franquia Hobby de 4 horas.
+
+A interface consultava uma avaliação por música ao sincronizar a biblioteca,
+inclusive para músicas sem avaliação (404). Agora usa
+`GET /api/avaliacoes/usuarios/{usuarioId}`, com uma única consulta de projeção
+para todas as avaliações daquele usuário. O endpoint permite o próprio usuário
+ou ADMIN. Os endpoints individuais continuam disponíveis. Com 200 músicas,
+avaliações e histórico passam de 201 para 2 requisições; atualizar apenas o
+histórico faz 1 requisição e não recarrega avaliações.
+
+Os testes cobrem o número de chamadas, o conteúdo retornado e a autorização.
+Essa redução não representa uma medição de economia de CPU em produção.
+O histórico detalhado de rotas do dia do bloqueio já estava fora da retenção
+gratuita de 12 horas; não foi possível atribuir todo o consumo a esse fluxo.
+Inicializações do container Java também podem contribuir. Acompanhe Usage →
+Fluid Active CPU por projeto após a publicação para avaliar o consumo real.
+Apagar deployments não recupera CPU já consumida.
+
 ## Banco e segredos
 
 Conecte a integração Prisma Postgres ao projeto. A URL PostgreSQL deve ficar

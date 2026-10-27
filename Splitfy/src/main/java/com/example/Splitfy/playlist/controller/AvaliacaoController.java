@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
+import java.util.List;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/avaliacoes")
@@ -34,6 +36,12 @@ public class AvaliacaoController {
     @GetMapping("/{usuarioId}/{musicaId}")
     public AvaliacaoResponse buscar(@PathVariable Long usuarioId, @PathVariable Long musicaId) {
         return avaliacaoService.buscar(usuarioId, musicaId);
+    }
+
+    @GetMapping("/usuarios/{usuarioId}")
+    @PreAuthorize("hasRole('ADMIN') or #p0.toString() == authentication.name")
+    public List<AvaliacaoResponse> listarPorUsuario(@PathVariable Long usuarioId) {
+        return avaliacaoService.listarPorUsuario(usuarioId);
     }
 
     @PutMapping("/{usuarioId}/{musicaId}")

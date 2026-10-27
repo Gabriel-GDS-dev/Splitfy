@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.List;
 
 @Service
 public class AvaliacaoService {
@@ -23,6 +24,17 @@ public class AvaliacaoService {
     public AvaliacaoService(AvaliacaoRepository avaliacaoRepository, MusicaRepository musicaRepository) {
         this.avaliacaoRepository = avaliacaoRepository;
         this.musicaRepository = musicaRepository;
+    }
+
+    @Transactional(readOnly = true)
+    public List<AvaliacaoResponse> listarPorUsuario(Long usuarioId) {
+        if (usuarioId == null || usuarioId <= 0) {
+            throw new PlaylistValidationException("Dados invalidos.", Map.of("usuarioId", "Informe um ID positivo."));
+        }
+        if (!avaliacaoRepository.usuarioExiste(usuarioId)) {
+            throw new PlaylistNotFoundException("Usuario nao encontrado.");
+        }
+        return avaliacaoRepository.listarPorUsuario(usuarioId);
     }
 
     @Transactional(readOnly = true)
