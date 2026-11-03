@@ -1237,7 +1237,8 @@
             document.querySelector("#import-metadata").hidden = false;
             document.querySelector("#import-artist").value = result.artista;
             document.querySelector("#import-album").value = result.album || result.titulo;
-            document.querySelector('[name="albumId"]').value = "importar";
+            const albumField = document.querySelector('[name="albumId"]');
+            if (!albumField.value || albumField.value === "importar") albumField.value = "importar";
             if (!document.querySelector('[name="generoId"]').value) document.querySelector('[name="generoId"]').value = "novo";
         }
         document.querySelector(field).value = result.url;

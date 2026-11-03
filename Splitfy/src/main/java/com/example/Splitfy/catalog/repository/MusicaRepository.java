@@ -3,11 +3,24 @@ package com.example.Splitfy.catalog.repository;
 import com.example.Splitfy.catalog.entity.Musica;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 public interface MusicaRepository extends JpaRepository<Musica, Long> {
+
+    @Modifying
+    @Query(value = "delete from playlist_musica where musica_id = :id", nativeQuery = true)
+    void excluirVinculosPlaylists(@Param("id") Long id);
+
+    @Modifying
+    @Query(value = "delete from avaliacao where musica_id = :id", nativeQuery = true)
+    void excluirAvaliacoes(@Param("id") Long id);
+
+    @Modifying
+    @Query(value = "delete from historico_reproducao where musica_id = :id", nativeQuery = true)
+    void excluirHistorico(@Param("id") Long id);
 
     List<Musica> findByGeneroIdOrderByTituloAsc(Long generoId);
 

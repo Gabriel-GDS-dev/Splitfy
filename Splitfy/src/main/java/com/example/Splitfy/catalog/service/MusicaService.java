@@ -111,6 +111,9 @@ public class MusicaService {
     @Transactional
     public void excluir(Long id) {
         Musica musica = buscarEntidade(id);
+        musicaRepository.excluirVinculosPlaylists(id);
+        musicaRepository.excluirAvaliacoes(id);
+        musicaRepository.excluirHistorico(id);
         musicaRepository.delete(musica);
     }
 

@@ -36,6 +36,10 @@ public class AlbumService {
     public AlbumResponse criar(AlbumRequest request) {
         validarAno(request.anoLancamento());
         Artista artista = buscarArtista(request.artistaId());
+        var existentes = albumRepository.buscarExistentes(artista.getId(), request.titulo());
+        if (!existentes.isEmpty()) {
+            return AlbumMapper.toResponse(existentes.getFirst());
+        }
         Album album = albumRepository.save(AlbumMapper.toEntity(request, artista));
         return AlbumMapper.toResponse(album);
     }

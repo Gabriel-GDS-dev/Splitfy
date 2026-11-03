@@ -15,6 +15,16 @@ function nodes() {
     return { node, document: { querySelector: node } };
 }
 
+test("usar resultado da busca preserva o album existente escolhido", () => {
+    const h = nodes();
+    h.node('[name="albumId"]').value = "42";
+    const context = { document: h.document, state: { editor: {} } };
+    vm.createContext(context);
+    vm.runInContext(app.slice(app.indexOf("    function applyMusicResult("), app.indexOf("    function bindEvents(")), context);
+    context.applyMusicResult({ fonte: "SPOTIFY", titulo: "Outra faixa", artista: "Cantor", album: "Outro album", url: "spotify" });
+    assert.equal(h.node('[name="albumId"]').value, "42");
+});
+
 test("trocar o resultado substitui metadados e invalida o album da selecao anterior", () => {
     const h = nodes();
     const context = { document: h.document, state: { editor: {} } };
