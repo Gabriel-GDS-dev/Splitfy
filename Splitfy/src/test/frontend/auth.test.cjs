@@ -21,6 +21,7 @@ function harness(saved, response) {
     const calls = [];
     const form = node("#login-form");
     form.elements = { email: { value: "teste@example.test" }, senha: { value: "senha-de-teste" },
+        confirmarSenha: { value: "" },
         nome: { value: "Teste" }, dataNascimento: { value: "2000-01-01" } };
     const context = {
         document: { querySelector: node },
@@ -73,11 +74,49 @@ test("cadastro público cria conta sem solicitar permissão ADMIN e depois faz l
     const h = harness(null, { ok: true, json: async () => ({ tokenAcesso: token() }) });
     h.node("#signup-toggle").listeners.click();
     assert.equal(h.node("#signup-name-field").hidden, false);
+    h.node("#login-form").elements.confirmarSenha.value = "senha-de-teste";
     await h.submit();
     assert.equal(h.calls[0][0], "/api/usuarios");
     assert.equal(h.calls[1][0], "/api/auth/login");
     assert.equal(Object.hasOwn(JSON.parse(h.calls[0][1].body), "role"), false);
+    assert.equal(Object.hasOwn(JSON.parse(h.calls[0][1].body), "confirmarSenha"), false);
+    assert.equal(h.node("#login-form").elements.confirmarSenha.value, "");
     assert.equal(h.auth.getSession().role, "USER");
+});
+
+test("cadastro bloqueia senhas diferentes e permite corrigir antes de enviar", async () => {
+    const h = harness(null, { ok: true, json: async () => ({ tokenAcesso: token() }) });
+    h.node("#signup-toggle").listeners.click();
+    const confirm = h.node("#login-form").elements.confirmarSenha;
+    assert.equal(h.node("#signup-confirm-password-field").hidden, false);
+    assert.equal(confirm.required, true);
+    assert.equal(confirm.disabled, false);
+    for (const value of ["", "senha-diferente", "senha-de-teste "]) {
+        confirm.value = value;
+        await h.submit();
+        assert.equal(h.calls.length, 0);
+        assert.match(h.node("#login-feedback").textContent, /senhas não coincidem/);
+        assert.equal(h.node("#login-submit").disabled, false);
+    }
+    confirm.value = "senha-de-teste";
+    await h.submit();
+    assert.equal(h.calls.length, 2);
+    assert.equal(h.auth.getSession().userId, 7);
+});
+
+test("voltar ao login oculta, desabilita e limpa a confirmação da senha", async () => {
+    const h = harness(null, { ok: true, json: async () => ({ tokenAcesso: token() }) });
+    h.node("#signup-toggle").listeners.click();
+    const confirm = h.node("#login-form").elements.confirmarSenha;
+    confirm.value = "outra-senha";
+    h.node("#signup-toggle").listeners.click();
+    assert.equal(h.node("#signup-confirm-password-field").hidden, true);
+    assert.equal(confirm.required, false);
+    assert.equal(confirm.disabled, true);
+    assert.equal(confirm.value, "");
+    await h.submit();
+    assert.equal(h.calls.length, 1);
+    assert.equal(h.calls[0][0], "/api/auth/login");
 });
 
 function apiHarness(session, status = 200) {

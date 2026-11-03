@@ -10,6 +10,13 @@ as rotas da API e do Swagger. `Dockerfile.vercel` compila a aplicação com Java
 Runtime e Services são recursos beta da Vercel, disponíveis em todos os planos.
 O JRE limita a compilação inicial ao nível 1 para reduzir o tempo de partida
 quando a Vercel inicia uma nova instância depois de um período sem acessos.
+O Spring usa inicialização lazy da aplicação e dos repositórios, com
+`spring.jpa.open-in-view=false`, para abrir a porta HTTP antes de conectar ao
+banco e executar o Flyway. `ConfiguracaoJpaLazy` adia a fábrica do Hibernate,
+que o Spring normalmente inicializaria antes do HTTP mesmo com lazy habilitado.
+A primeira operação de banco ainda aguarda essa
+inicialização. Isso evita que uma conexão lenta durante o cold start esgote o
+prazo da Vercel para o container começar a aceitar conexões na porta `PORT`.
 
 ## Banco e segredos
 

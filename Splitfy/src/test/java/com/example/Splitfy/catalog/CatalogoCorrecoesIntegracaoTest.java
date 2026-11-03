@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
@@ -21,7 +22,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CatalogoCorrecoesIntegracaoTest {
     @Autowired MockMvc mvc;
     @Autowired JdbcTemplate jdbc;
-    @Autowired EntityManager entityManager;
+    @PersistenceContext EntityManager entityManager;
+
+    @Test
+    void adicionaDuasMusicasAoMesmoAlbumExistente() throws Exception {
+        jdbc.update("INSERT INTO artista (id, nome) VALUES (953, 'Cantor existente')");
+        jdbc.update("INSERT INTO album (id, titulo, artista_id) VALUES (953, 'Album existente', 953)");
+        jdbc.update("INSERT INTO genero (id, nome) VALUES (953, 'Genero existente')");
+        var admin = jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        for (int i = 1; i <= 2; i++) {
+            mvc.perform(post("/api/musicas").with(admin).contentType("application/json")
+                            .content("{\"titulo\":\"Faixa " + i + "\",\"duracaoSegundos\":200,\"albumId\":953,\"generoId\":953}"))
+                    .andExpect(status().isCreated()).andExpect(jsonPath("$.albumId").value(953));
+        }
+        entityManager.flush();
+        entityManager.clear();
+        mvc.perform(get("/api/albuns/953/musicas").with(admin))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(2));
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM album WHERE artista_id = 953", Integer.class)).isEqualTo(1);
+    }
 
     @Test
     void reutilizaAlbumDoMesmoArtistaMesmoComCaixaEEspacosDiferentes() throws Exception {

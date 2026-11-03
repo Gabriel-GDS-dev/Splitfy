@@ -13,6 +13,10 @@
         registering = value;
         document.querySelector("#signup-name-field").hidden = !value;
         document.querySelector("#signup-birth-field").hidden = !value;
+        document.querySelector("#signup-confirm-password-field").hidden = !value;
+        form.elements.confirmarSenha.required = value;
+        form.elements.confirmarSenha.disabled = !value;
+        form.elements.confirmarSenha.value = "";
         form.elements.nome.required = value;
         form.elements.dataNascimento.required = value;
         form.elements.senha.minLength = value ? 6 : 1;
@@ -94,6 +98,9 @@
         feedback.textContent = "Entrando…";
         try {
             if (registering) {
+                if (!form.elements.confirmarSenha.value || form.elements.senha.value !== form.elements.confirmarSenha.value) {
+                    throw new Error("As senhas não coincidem. Confira a confirmação da senha.");
+                }
                 const cadastro = await fetch("/api/usuarios", {
                     method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
                     body: JSON.stringify({ nome: form.elements.nome.value.trim(),
