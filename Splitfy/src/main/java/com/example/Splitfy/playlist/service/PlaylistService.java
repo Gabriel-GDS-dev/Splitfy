@@ -12,6 +12,9 @@ import com.example.Splitfy.playlist.exception.PlaylistNotFoundException;
 import com.example.Splitfy.playlist.exception.PlaylistValidationException;
 import com.example.Splitfy.playlist.repository.PlaylistMusicaRepository;
 import com.example.Splitfy.playlist.repository.PlaylistRepository;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,14 +39,17 @@ public class PlaylistService {
 
     @Transactional(readOnly = true)
     public List<PlaylistResponse> listar() {
-        return playlistRepository.findAll().stream()
+        List<Playlist> playlists = administradorAutenticado()
+                ? playlistRepository.findAll()
+                : playlistRepository.findVisiveisPara(usuarioAutenticadoId());
+        return playlists.stream()
                 .map(this::toResponse)
                 .toList();
     }
 
     @Transactional(readOnly = true)
     public PlaylistResponse buscar(Long id) {
-        return toResponse(buscarEntidade(id));
+        return toResponse(buscarVisivel(id));
     }
 
     @Transactional(readOnly = true)
@@ -51,7 +57,10 @@ public class PlaylistService {
         if (!playlistRepository.usuarioExiste(usuarioId)) {
             throw new PlaylistNotFoundException("Usuario nao encontrado.");
         }
-        return playlistRepository.findByUsuarioIdOrderByNomeAsc(usuarioId).stream()
+        List<Playlist> playlists = podeGerenciarPlaylistsDe(usuarioId)
+                ? playlistRepository.findByUsuarioIdOrderByNomeAsc(usuarioId)
+                : playlistRepository.findByUsuarioIdAndPublicaTrueOrderByNomeAsc(usuarioId);
+        return playlists.stream()
                 .map(this::toResponse)
                 .toList();
     }
@@ -71,6 +80,9 @@ public class PlaylistService {
         if (!campos.isEmpty()) {
             throw new PlaylistValidationException("Dados de playlist invalidos.", campos);
         }
+        if (!podeGerenciarPlaylistsDe(request.usuarioId())) {
+            throw new AccessDeniedException("Voce so pode criar playlists para o seu proprio usuario.");
+        }
         boolean publica = request.publica() != null && request.publica();
         Playlist playlist = new Playlist(nome, limparTexto(request.descricao()), publica, request.usuarioId());
         return toResponse(playlistRepository.save(playlist));
@@ -78,7 +90,8 @@ public class PlaylistService {
 
     @Transactional
     public PlaylistResponse atualizar(Long id, PlaylistRequest request) {
-        Playlist playlist = buscarEntidade(id);
+        Playlist playlist = buscarVisivel(id);
+        exigirDono(playlist, "Apenas o dono da playlist pode edita-la.");
         Map<String, String> campos = new LinkedHashMap<>();
         String nome = limparTexto(request.nome());
         if (nome == null) {
@@ -98,7 +111,8 @@ public class PlaylistService {
 
     @Transactional
     public void excluir(Long id, Long usuarioId) {
-        Playlist playlist = buscarEntidade(id);
+        Playlist playlist = buscarVisivel(id);
+        exigirDono(playlist, "Apenas o dono da playlist pode exclui-la.");
         if (usuarioId == null || !usuarioId.equals(playlist.getUsuarioId())) {
             throw new PlaylistValidationException(
                     "Apenas o dono da playlist pode exclui-la.",
@@ -110,7 +124,7 @@ public class PlaylistService {
 
     @Transactional(readOnly = true)
     public List<PlaylistMusicaResponse> listarMusicas(Long playlistId) {
-        buscarEntidade(playlistId);
+        buscarVisivel(playlistId);
         return playlistMusicaRepository.findByPlaylistId(playlistId).stream()
                 .map(this::toMusicaResponse)
                 .toList();
@@ -118,7 +132,8 @@ public class PlaylistService {
 
     @Transactional
     public PlaylistMusicaResponse adicionarMusica(Long playlistId, AdicionarMusicaRequest request) {
-        Playlist playlist = buscarEntidade(playlistId);
+        Playlist playlist = buscarVisivel(playlistId);
+        exigirDono(playlist, "Apenas o dono da playlist pode adicionar musicas.");
         Map<String, String> campos = new LinkedHashMap<>();
         if (request.usuarioId() == null || !request.usuarioId().equals(playlist.getUsuarioId())) {
             campos.put("usuarioId", "Apenas o dono da playlist pode adicionar musicas.");
@@ -143,7 +158,8 @@ public class PlaylistService {
 
     @Transactional
     public void removerMusica(Long playlistId, Long musicaId, Long usuarioId) {
-        Playlist playlist = buscarEntidade(playlistId);
+        Playlist playlist = buscarVisivel(playlistId);
+        exigirDono(playlist, "Apenas o dono da playlist pode remover musicas.");
         if (usuarioId == null || !usuarioId.equals(playlist.getUsuarioId())) {
             throw new PlaylistValidationException(
                     "Apenas o dono da playlist pode remover musicas.",
@@ -158,6 +174,50 @@ public class PlaylistService {
     private Playlist buscarEntidade(Long id) {
         return playlistRepository.findById(id)
                 .orElseThrow(() -> new PlaylistNotFoundException("Playlist nao encontrada."));
+    }
+
+    /**
+     * Playlists privadas so existem para o dono e para administradores.
+     * Para os demais usuarios respondemos 404, sem revelar que a playlist existe.
+     */
+    private Playlist buscarVisivel(Long id) {
+        Playlist playlist = buscarEntidade(id);
+        if (!playlist.isPublica() && !podeGerenciarPlaylistsDe(playlist.getUsuarioId())) {
+            throw new PlaylistNotFoundException("Playlist nao encontrada.");
+        }
+        return playlist;
+    }
+
+    private void exigirDono(Playlist playlist, String mensagem) {
+        if (!podeGerenciarPlaylistsDe(playlist.getUsuarioId())) {
+            throw new AccessDeniedException(mensagem);
+        }
+    }
+
+    private boolean podeGerenciarPlaylistsDe(Long usuarioId) {
+        if (administradorAutenticado()) {
+            return true;
+        }
+        Long logado = usuarioAutenticadoId();
+        return logado != null && logado.equals(usuarioId);
+    }
+
+    private Long usuarioAutenticadoId() {
+        Authentication autenticacao = SecurityContextHolder.getContext().getAuthentication();
+        if (autenticacao == null || autenticacao.getName() == null) {
+            return null;
+        }
+        try {
+            return Long.valueOf(autenticacao.getName());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private boolean administradorAutenticado() {
+        Authentication autenticacao = SecurityContextHolder.getContext().getAuthentication();
+        return autenticacao != null && autenticacao.getAuthorities().stream()
+                .anyMatch(permissao -> "ROLE_ADMIN".equals(permissao.getAuthority()));
     }
 
     private String limparTexto(String valor) {
