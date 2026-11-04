@@ -289,14 +289,24 @@
             return;
         }
 
+        const userId = state.activeUserId;
         const [reviews, history] = await Promise.all([
-            Promise.all(state.songs.map((song) =>
-                request(`/api/avaliacoes/${state.activeUserId}/${song.id}`, { allow404: true })
-            )),
-            request(`/api/usuarios/${state.activeUserId}/historico?limite=100`)
+            request(`/api/avaliacoes/usuarios/${userId}`),
+            request(`/api/usuarios/${userId}/historico?limite=100`)
         ]);
-        state.reviews = reviews.filter(Boolean);
+        if (state.activeUserId !== userId) return;
+        state.reviews = unwrapList(reviews);
         state.history = unwrapList(history);
+    }
+
+    async function loadHistory() {
+        if (!state.activeUserId) {
+            state.history = [];
+            return;
+        }
+        const userId = state.activeUserId;
+        const history = await request(`/api/usuarios/${userId}/historico?limite=100`);
+        if (state.activeUserId === userId) state.history = unwrapList(history);
     }
 
     async function loadProfiles() {
@@ -1314,7 +1324,7 @@
         });
         document.querySelector("#refresh-history").addEventListener("click", async () => {
             try {
-                await loadUserData();
+                await loadHistory();
                 renderHistory();
                 showToast("Histórico atualizado.");
             } catch (error) {
